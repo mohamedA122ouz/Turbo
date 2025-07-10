@@ -1,0 +1,15 @@
+﻿@{
+    var personCard = ViewData["personCard"] as ticketApp.Models.Utility.PersonCard;
+    var employees = ViewData["employees"] as List<ticketApp.Models.DBmodels.Employee>;
+}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
+
+<div class="flex">
+    <partial name="~/Views/Components/GridChart.cshtml" model="Model" />
+    <partial name="~/Views/Components/PieChart.cshtml" model="Model" />
+    <partial name="~/Views/Components/PersonCard.cshtml" model="personCard" />
+</div>
+@if (employees != null)
+{
+    <partial name="~/Views/Home/Employees.cshtml" model="employees" />
+}

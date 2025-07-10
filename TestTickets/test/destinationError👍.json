@@ -1,0 +1,41 @@
+{
+    "Input": ">\n\n\n738X9N/AI CAIOU 36FUAI AG 90256353 27FEB  \n 1.1MO/YAOBIN MR  2.1CAI/LIANGHONG MR  3.1DENG/RENHUA MR \n 4.1LIU/JINLIAN MS \n 1 . QR 1304 M  04MAR CAIDOH HK4  1255   1655  O*        E MO        \n 2 . QR 6952 M  05MAR DOHMAD HK4  0055   0710  O*        E TU        \n         OPERATED BY IBERIA\n 3 . QR 5374 M  05MAR MADUIO HK4  1200   1710  O*        E TU        \n         OPERATED BY IBERIA\n\n \n \n* FILED FARE DATA EXISTS * >*FF    \n\nFQ1  - S1-3                                    AP     G 27FEB24 MG/AG\nFQ\nP1  MO/YAOBIN MR              ADT    G  E   1576629144262\nP2  CAI/LIANGHONG MR          ADT    G  E   1576629144263\nP3  DENG/RENHUA MR            ADT    G  E   1576629144264\nP4  LIU/JINLIAN MS            ADT    G  E   1576629144265\nCAI QR X/DOH QR X/MAD QR UIO 1064.43 NUC1064.43END ROE1.0\nFARE USD1064.00 EQU EGP32825.00 TAX 150.00EG TAX 62.00EQ TAX 1\n00.00JK TAX 15.00O2 TAX 31.00O9 TAX 2.00Q7 TAX 772.00QH TAX 62\n.00S4 TAX 150.00XK TAX 10.80XL TAX 509.00G4 TAX 47.00PZ TAX 50\n9.00QA TAX 85.00R9 TAX 419.00JD TAX 21.00OG TAX 71.00QV TAX 30\n9.00E2 TAX 6263.00YQ TAX 1020.00YR TOT EGP43432.80\n***ADDITIONAL FEES MAY APPLY*SEE>FO1· \nS1  FB-MLR0R1SO B-2PC               NB-04MAR    NA-04MAR \nS2  FB-MLR0R1SO B-2PC               NB-05MAR    NA-05MAR \nS3  FB-MLR0R1SO B-2PC               NB-05MAR    NA-05MAR \nNON END/CHNG PENALTIES\nAS PER RULE\nLAST DATE TO PURCHASE TICKET: 04MAR24\nSUBTOTAL EGP 43432.80  TOTAL FEES 0.00  GRAND TOTAL 43432.80\n<<VIEW BRAND DETAILS>>\nT P1-4/S1-3/CQR/ET/TA89X5\n\n\n* VENDOR LOCATOR DATA EXISTS * >*VL    \n* VENDOR REMARKS DATA EXISTS * >*VR    \n* SERVICE INFORMATION EXISTS * >*SI    \n* TINS REMARKS EXIST * >*HTI   \n* ELECTRONIC DATA EXISTS * >*HTE   \n\n\n \nFONE-SHAB16670124261\n\n \nFOP-\n \n\n \nTKTG-T*CAI 27FEB0224Z MG AG\n\n \nFQ1  - S1-3                                    AP     G 27FEB24   /  \nP1  MO/YAOBIN MR              ADT    G  E   1576629144262\nP2  CAI/LIANGHONG MR          ADT    G  E   1576629144263\nP3  DENG/RENHUA MR            ADT    G  E   1576629144264\nP4  LIU/JINLIAN MS            ADT    G  E   1576629144265\n\n<<VIEW BRAND DETAILS>>\n\n \n\n\n\n\n\n\n\n\n \n* NO HISTORY TIN DATA *\n* CURRENT TIN DATA *\nMO/YAOBIN MR-/1576629144262/-EGP/43432.80/ET\nCAI/LIANGHONG MR-/1576629144263/-EGP/43432.80/ET\nDENG/RENHUA MR-/1576629144264/-EGP/43432.80/ET\nLIU/JINLIAN MS-/1576629144265/-EGP/43432.80/ET\n\n\n\n\n\n \n\n \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "Expected": [
+        {
+            "PNR": "738X9N",
+            "Airline": "QR",
+            "TNum": "1576629144262",
+            "Price": 43432.80,
+            "Client": "test",
+            "IssueCompany": "iata",
+            "CreatedAt": "2024-02-27T00:00:00"
+        },
+        {
+            "PNR": "738X9N",
+            "Airline": "QR",
+            "TNum": "1576629144263",
+            "Price": 43432.80,
+            "Client": "test",
+            "IssueCompany": "iata",
+            "CreatedAt": "2024-02-27T00:00:00"
+        },
+        {
+            "PNR": "738X9N",
+            "Airline": "QR",
+            "TNum": "1576629144264",
+            "Price": 43432.80,
+            "Client": "test",
+            "IssueCompany": "iata",
+            "CreatedAt": "2024-02-27T00:00:00"
+        },
+        {
+            "PNR": "738X9N",
+            "Airline": "QR",
+            "TNum": "1576629144265",
+            "Price": 43432.80,
+            "Client": "test",
+            "IssueCompany": "iata",
+            "CreatedAt": "2024-02-27T00:00:00"
+        }
+    ]
+}

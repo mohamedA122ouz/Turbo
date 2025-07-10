@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Turbo🚀</title>
+    <meta name="author" content="name">
+    <meta name="description" content="description here">
+    <meta name="keywords" content="keywords,here">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"> <!--Totally optional :) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"
+        integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+
+    <style>
+        .res_container {
+            display: none !important;
+        }
+
+        .res_container_show {
+            display: flex !important;
+            justify-content: flex-end;
+        }
+    </style>
+
+    <div id="snackbar"> </div>
+
+    <style>
+        /* The snackbar - position it at the bottom and in the middle of the screen */
+        #snackbar {
+            visibility: hidden;
+            /* Hidden by default. Visible on click */
+            min-width: 250px;
+            /* Set a default minimum width */
+            margin-left: -125px;
+            /* Divide value of min-width by 2 */
+            background-color: #333;
+            /* Black background color */
+            color: #fff;
+            /* White text color */
+            text-align: center;
+            /* Centered text */
+            border-radius: 2px;
+            /* Rounded borders */
+            padding: 16px;
+            /* Padding */
+            position: fixed;
+            /* Sit on top of the screen */
+            z-index: 1;
+            /* Add a z-index if needed */
+            left: 50%;
+            /* Center the snackbar */
+            bottom: 30px;
+            /* 30px from the bottom */
+        }
+
+        /* Show the snackbar when clicking on a button (class added with JavaScript) */
+        #snackbar.show {
+            visibility: visible;
+            /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+          However, delay the fade out process for 2.5 seconds */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        /* Animations to fade the snackbar in and out */
+        @@-webkit - keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @@keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @@-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @@keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+    </style>
+    <style>
+        img {
+            object-fit: cover;
+        }
+
+        svg {
+            display: inline;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800 font-sans leading-normal tracking-normal mt-12">
+
+    <header>
+        <!--Nav-->
+        <nav aria-label="menu nav" class="bg-gray-800 pt-2 md:pt-1 pb-1 px-1 mt-0 h-auto fixed w-full z-20 top-0">
+
+            <div class="flex flex-wrap items-center">
+                <div class="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white">
+                    <a href="#" aria-label="Home">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                            class="bi bi-wrench-adjustable-circle-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M6.705 8.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z" />
+                            <path
+                                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m-6.202-4.751 1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2a7.03 7.03 0 0 1-2.949-2.951M12.496 8a4.5 4.5 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11q.04.3.04.61" />
+                        </svg>Turbo🚀
+                    </a>
+                </div>
+
+                <div class="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2">
+                    <span class="relative w-full">
+
+                        <input oninput="debounce(FetchUsers,350)()" aria-label="search" type="search"
+                            id="Search_users_bar" placeholder="Search" autocomplete="off"
+                            class="w-full bg-gray-900 text-white transition border border-transparent focus:outline-none focus:border-gray-400 rounded py-3 px-2 pl-10 appearance-none leading-normal">
+                        <div id="dropdown" class="res_container">
+                            <div style="position:absolute;width:100%"
+                                class="z-10   bg-black divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                    aria-labelledby="dropdownDefaultButton" id="res_container_card">
+                                    <li></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="absolute search-icon" style="top: 1rem; left: .8rem;">
+                            <svg class="fill-current pointer-events-none text-white w-4 h-4"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path
+                                    d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z">
+                                </path>
+                            </svg>
+                        </div>
+                    </span>
+                </div>
+
+                <div class="flex w-full pt-2 content-center justify-between md:w-1/3 md:justify-end">
+                    <ul class="list-reset flex justify-between flex-1 md:flex-none items-center">
+                        <li class="flex-1 md:flex-none md:mr-3">
+                            <a class="inline-block py-2 px-4 text-white no-underline" href="#">Active</a>
+                        </li>
+                        <li class="flex-1 md:flex-none md:mr-3">
+                            <a class="inline-block text-gray-400 no-underline hover:text-gray-200 hover:text-underline py-2 px-4"
+                                href="#">link</a>
+                        </li>
+                        <li class="flex-1 md:flex-none md:mr-3">
+                            <div class="relative inline-block">
+                                <button onclick="toggleDD('myDropdown')" class="drop-button text-white py-2 px-2">
+                                    <span class="pr-2"><i class="em em-robot_face"></i></span> Hi, @@ii <svg
+                                        class="h-3 fill-current inline" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                </button>
+                                <div id="myDropdown"
+                                    class="dropdownlist absolute bg-gray-800 text-white right-0 mt-3 p-3 overflow-auto z-30 invisible">
+                                    <input type="text" class="drop-search p-2 text-gray-600" placeholder="Search.."
+                                        id="myInput" onkeyup="filterDD('myDropdown','myInput')">
+                                    <a href="#"
+                                        class="p-2 hover:bg-gray-800 text-white text-sm no-underline hover:no-underline block"><i
+                                            class="fa fa-user fa-fw"></i> Profile</a>
+                                    <a href="#"
+                                        class="p-2 hover:bg-gray-800 text-white text-sm no-underline hover:no-underline block"><i
+                                            class="fa fa-cog fa-fw"></i> Settings</a>
+                                    <div class="border border-gray-800"></div>
+                                    <a href="/admin/logout"
+                                        class="p-2 hover:bg-gray-800 text-white text-sm no-underline hover:no-underline block"><i
+                                            class="fas fa-sign-out-alt fa-fw"></i> Log Out</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <main>
+        <div class="flex flex-col md:flex-row">
+            <nav aria-label="alternative nav">
+                <div
+                    class="bg-gray-800 shadow-xl h-20 fixed bottom-0 mt-12 md:relative md:h-screen z-10 w-full md:w-48 content-center">
+                    <div
+                        class="md:mt-12 md:w-48 md:fixed md:left-0 md:top-0 content-center md:content-start text-left justify-between">
+                        <ul
+                            class="list-reset flex flex-row md:flex-col pt-3 md:py-3 px-1 md:px-2 text-center md:text-left">
+                            <li class="mr-3 flex-1">
+                                <a href="/employees"
+                                    class="IIA block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-white border-b-2 border-gray-800 hover:border-pink-500">
+                                    <i class="fas fa-tasks pr-0 md:pr-3"></i><span
+                                        class="pb-1 md:pb-0 text-xs md:text-base text-gray-400 md:text-gray-200 block md:inline-block">Employees</span>
+                                </a>
+                            </li>
+                            <li class="mr-3 flex-1">
+                                 <a href="/tickets"
+                                    class="IIA block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-white border-b-2 border-gray-800 hover:border-purple-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-ticket-detailed-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zm4 1a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5m0 5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5M4 8a1 1 0 0 0 1 1h6a1 1 0 1 0 0-2H5a1 1 0 0 0-1 1" />
+                                    </svg><span
+                                        class="pb-1 md:pb-0 text-xs md:text-base text-gray-400 md:text-gray-200 block md:inline-block">Tickets</span>
+                                </a>
+                            </li>
+                            <li class="mr-3 flex-1">
+                                <a href="/analysis"
+                                    class="IIA block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-white border-b-2 border-gray-800 hover:border-blue-500">
+                                    <i class="fas fa-chart-area pr-0 md:pr-3"></i><span
+                                        class="pb-1 md:pb-0 text-xs md:text-base text-gray-400 md:text-gray-200 block md:inline-block">Analytics</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+            </nav>
+            <section style="width:100%; background-color:white;">
+                <div id="main" class="main-content flex-1 bg-gray-800 mt-12 md:mt-2 pb-24 md:pb-5">
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script>
+
+        document.addEventListener("click", (e) => {
+            if (e.target.tagName === "A" && e.target.href.startsWith(location.origin))
+                sessionStorage.setItem("internal-navigation", "true");
+            else if (e.target.parentNode.tagName === 'A' && e.target.parentNode.href.startsWith(location.origin))
+                sessionStorage.setItem("internal-navigation", "true");
+        });
+
+        window.addEventListener("load", () => {
+            sessionStorage.removeItem("internal-navigation");
+        });
+
+        let timer = 0;
+        function toggleDD(myDropMenu) {
+            document.getElementById(myDropMenu).classList.toggle("invisible");
+        }
+        /*Filter dropdown options*/
+        function filterDD(myDropMenu, myDropMenuSearch) {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById(myDropMenuSearch);
+            filter = input.value.toUpperCase();
+            div = document.getElementById(myDropMenu);
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.drop-button') && !event.target.matches('.drop-search')) {
+                var dropdowns = document.getElementsByClassName("dropdownlist");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (!openDropdown.classList.contains('invisible')) {
+                        openDropdown.classList.add('invisible');
+                    }
+                }
+            }
+        }
+        async function FetchUsers() {
+            document.getElementById("res_container_card").innerHTML = "";
+
+            const InputVal = document.getElementById("Search_users_bar").value;
+            if (InputVal == "") {
+                document.getElementById("dropdown").className = "res_container";
+            }
+            let res = await fetch(`http://localhost:7125/admin/user?email=${InputVal}`);
+            let data = await res.json();
+            if (data.length != 0) {
+                document.getElementById("dropdown").className = "res_container_show";
+            }
+            data.forEach(d => {
+                const new_a = document.createElement("a");
+                new_a.className = "block px-4 py-2 text-white hover:bg-gray-500 dark:hover:bg-gray-600 dark:hover:text-white";
+                new_a.innerHTML = d["email"];
+                let userid = d["id"];
+                new_a.href = `@@Url.Action("ShowUser", "Admin")?userid=` + userid;
+                const new_li = document.createElement("a");
+                new_li.append(new_a);
+                document.getElementById("res_container_card").appendChild(new_li);
+            });
+        }
+        function debounce(callback, delayTime) {
+            return () => {
+                clearTimeout(timer);
+                timer = setTimeout(callback, delayTime);
+            }
+        }
+        function ShowToast(msg) {
+            // Get the snackbar DIV
+            var x = document.getElementById("snackbar");
+            x.innerText = msg;
+
+            // Add the "show" class to DIV
+            x.className = "show";
+
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("output");
+            const aArr = document.querySelectorAll(".IIA");
+            const path = window.location.href.toLocaleLowerCase();
+            const color = "border-yellow-600";
+            aArr.forEach((el, i) => {
+                const regex = new RegExp(`^${el.href}\\??#?[A-Za-z%&=0-9]*#?\\/?$`);
+                let hoverColor = el.className.indexOf("hover:border");
+                if (regex.test(path)) {
+                    const classString = el.className;
+                    const afterHoverClass = classString.indexOf(" ", hoverColor) === -1 ? classString.length : classString.indexOf(" ", hoverColor);
+                    const colorClass = classString.substring(hoverColor + 6, afterHoverClass);
+                    console.log(colorClass);
+                    const checkColorCorrectness = /^border-\w+-\d{1,4}$/ig;
+                    if (checkColorCorrectness.test(colorClass)) {
+                        el.classList.add(colorClass);
+                        el.firstElementChild.classList.add(colorClass.replace("border", "text"));
+                    }
+                    else {
+                        el.classList.add(color);
+                        el.firstElementChild.classList.add(color.replace("border", "text"));
+                    }
+                }
+            });
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+#main{
+  background-color: white;
+}
+@font-face {
+    font-family: Inconsolata;
+    src: url("/fonts/Inconsolata-VariableFont_wdth,wght.ttf");
+}
+
+:root {
+    --whiteModeFont: black;
+    --darkModeFont: white;
+    --largestFont: 200%;
+    --largerFont: 150%;
+    --largeFont: 125%;
+    --smallFont: 50%;
+    --mediumFont: 100%;
+    --paddingLarge: 50%;
+    --paddingMedium: 25%;
+    --paddingSmall: 10%;
+    --paddingSmallest: 5%;
+    --darkModeColor: white;
+    --whiteModeColor: black;
+    --darkModeLinearGrediant: linear-gradient(-65deg, rgba(255, 255, 255, 0.397), rgba(26, 26, 26, 0.397));
+    --whiteModeLinearGrediant: linear-gradient(-65deg, rgba(255, 255, 255, 0.397), rgba(17, 140, 255, 0.397));
+    --defaultFontFamily: Inconsolata, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --border-radius: 20px;
+    --defaultBlur: blur(20px);
+    --defaultShadow: 0 0 10px 0 var(--darkModeColor);
+    --defaultTextShadow: 0px 0px 10px var(--darkModeFont);
+}
+
+
+.dark {
+    background-image: url("/imgs/background-desktop.png");
+    color: var(--darkModeColor);
+}
+
+.dark {
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+}
+
+.ticket>h2 {
+    font-size: var(--largerFont);
+}
+
+h3 {
+    font-size: var(--largestFont);
+}
+
+.ticket {
+    padding: var(--paddingSmallest);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dark>.ticketCount:hover {
+    background-image: var(--darkModeLinearGrediant);
+}
+
+.white>.ticketCount:hover {
+    background-image: var(--whiteModeLinearGrediant);
+}
+
+.dark>.ticket {
+    box-shadow: var(--defaultShadow);
+    color: var(--darkModeFont);
+    font-size: var(--largeFont);
+    font-family: var(--DefaultFontFamily);
+    background: var(--darkModeLinearGrediant);
+    margin: auto;
+    border-radius: var(--border-radius);
+    backdrop-filter: var(--defaultBlur);
+    -webkit-backdrop-filter: var(--defaultBlur);
+}
+
+.white>.ticket {
+    box-shadow: 0 0 10px 0 var(--whiteModeColor);
+    color: var(--whiteModeFont);
+    font-size: var(--largeFont);
+    font-family: var(--DefaultFontFamily);
+    background: var(--whiteModeLinearGrediant);
+    margin: auto;
+    border-radius: var(--border-radius);
+    backdrop-filter: var(--defaultBlur);
+    -webkit-backdrop-filter: var(--defaultBlur);
+}
+
+.airplaneIconContainer {
+    display: flex;
+}
+
+#plane {
+    width: 50%;
+    margin: auto;
+}
+
+.destination {
+    display: flex;
+    justify-content: center;
+}
+
+.airport {
+    padding: 0px var(--paddingSmall)
+}
+
+.detailsBar {
+    display: flex;
+    gap: var(--paddingSmallest);
+}
+
+.ticketCount>svg {
+    justify-self: center;
+    align-self: center;
+    transition: 300ms;
+}
+
+.ticketCount {
+    display: flex;
+    width: max-content;
+    padding: 0px 10px;
+    margin: 10px;
+    border-radius: calc(var(--border-radius) - 10px);
+    cursor: pointer;
+}
