@@ -15,10 +15,10 @@ public static class DbSeeder {
             await roleManager.CreateAsync(new IdentityRole("Employee"));
 
         // 2. Create admin user if not exists
-        string adminEmail = configurations.GetConnectionString("AdminCredentials:Email")!;
-        string Password = configurations.GetConnectionString("AdminCredentials:Password")!;
-        string Username = configurations.GetConnectionString("AdminCredentials:Name")!;
-        string Phone = configurations.GetConnectionString("AdminCredentials:Phone")!;
+        string adminEmail = configurations["AdminCredentials:Email"]!;
+        string Password = configurations["AdminCredentials:Password"]!;
+        string Username = configurations["AdminCredentials:Name"]!;
+        string Phone = configurations["AdminCredentials:Phone"]!;
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null) {
             adminUser = new Person {
