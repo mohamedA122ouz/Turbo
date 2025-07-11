@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ticketApp.Models.Dbmodels;
 using ticketApp.Models.DBmodels;
+using ticketApp.Models.Utility;
 using ticketApp.Services;
 
 namespace ticketApp.Controllers
 {
+    [Authorize]
     [Route("tickets")]
     public class TicketController : Controller
     {
@@ -20,36 +23,27 @@ namespace ticketApp.Controllers
         }
         //Read
         [HttpGet("show")]
-        public IActionResult Tickets(Ticket? ticket)
+        public IActionResult Tickets()
         {
-            return View(new List<Ticket>());
+            return View();
         }
         //Create
         [HttpGet("create")]
-        public ActionResult Create()
+        public ActionResult Create(EnginOutput outp)
         {
-            return View();
+            return View(outp);
         }
         [HttpPost("create")]
         public ActionResult Create_Post([FromForm] string input)
         {
-            
-            Client client = new()
-            {
-                Name = "New User",
-                Id = 1,
-                PhoneNumber = "phone",
-            };
-            IssueCompany issueCompany = new()
-            {
-                Name = "IATA",
-                Balance = 0,
-                Id = 1,
-            };
-            
+            string email = User.Identity.Name!;
+            Employee e = db.Employees.FirstOrDefault(emp => emp.Person.Email == email)!;
+            Client client = db.Clients.FirstOrDefault(cl => cl.NickName == "Unknown");
+            IssueCompany issueCompany = db.IssueCompanies.FirstOrDefault(i => i.Name == "IATA");
             TEngine.Intializer(input);
+            EnginOutput ii = TEngine.createTickets(e,issueCompany,null,client)!;
             
-            return View("~/Views/Components/PieChart.cshtml");
+            return View("~/Views/Ticket/Tickets.cshtml",ii);
         }
         public ActionResult Index()
         {

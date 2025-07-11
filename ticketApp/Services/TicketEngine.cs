@@ -203,15 +203,18 @@ public class TicketEngine : RegexManger
         decimal output = value * FarePrice[0];
         NetPrices = NetPrices.Select(price => price - output).ToList();
     }
-    public EnginOutput? createTicket(Employee emp,IssueCompany issueCompany,Broker? broker=null,Client? client = null) {
+    public EnginOutput? createTickets(Employee emp,IssueCompany issueCompany,Broker? broker=null,Client? client = null) {
         if (!initialized) {
             return null;
         }
         EnginOutput? output = new();
-        output.oldTickets = oldTnums.Select(tNum => db.Tickets.FirstOrDefault(t => t.TNum == tNum)).ToList();
+        if(type == TicketType.Reissue)
+            output.oldTickets = oldTnums.Select(tNum => db.Tickets.FirstOrDefault(t => t.TNum == tNum)).ToList();
         if (client == null) {
             client = db.Clients.FirstOrDefault(c => c.Name == "Unknown")!;
         }
+        if(SellPcrices == null)
+            NetPriceAddedTo(0);
         output.newTickets = TicketNumbers.Select((t,i) => {
             return new Ticket() {
                 Airline = airline,
@@ -222,7 +225,7 @@ public class TicketEngine : RegexManger
                 NetPrice = NetPrices[i],
                 PNR = PNR,
                 isAReIssued = type == TicketType.Reissue,
-                TNum = Tnums[i],
+                TNum = t,
                 Destination = destination,
                 SellPrice = SellPcrices[i]
             };
@@ -260,7 +263,7 @@ public class TicketEngine : RegexManger
         if (string.IsNullOrWhiteSpace(ticketDetails)) {
             return CreationStatus.InputError;
         }
-        EnginOutput? EOutput = createTicket(emp, issueCompany, broker, client);
+        EnginOutput? EOutput = createTickets(emp, issueCompany, broker, client);
         if (EOutput == null)
             return CreationStatus.Failure;
         EnginTicketSave(EOutput,func);

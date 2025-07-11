@@ -66,21 +66,10 @@ public class DBContext : IdentityDbContext<Person>
                 CanDeleteSettings = true,
                 Employees = new List<Employee>()
             });
-          
-/*        builder.Entity<Employee>().HasData(
-            new Employee
-            {
-                Name = "admin",
-                PhoneNum = "1234567890",
-                Email = "test@gmail.com",
-                EmployeeType = Utility.EmployeeType.Manager,
-                PrivilegesId = 1,
-                EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<Employee>().HashPassword(null, "Admin@123"),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                Balance = 0,
-                Salary = 100000,
-                ImagePath = "https://cdn.pixabay.com/photo/2019/05/20/00/55/power-4215692_960_720.jpg",
-            });*/
+        builder.Entity<IssueCompany>().HasData(new {
+            Name = "IATA",
+            Balance = (decimal)0,
+            Id = 1
+        });
     }
 }
