@@ -75,7 +75,13 @@ public class TicketEngine : RegexManger
     }
     protected void extractERecord(string input)
     {
-        if (count == 0 )
+        /* 
+        - Example of ERecord
+            ALY/MARAM-/0656628946251/-EGP/5294.80/ET
+            AHMED/EMAN MS-/0656628946252/-EGP/5942.80/ET
+            ALI/YOUSEF-/0656628946253/-EGP/5294.80/ET
+        */
+        if (count == 0)
             extractCount(input);
         Regex regex = new(ERecordRegex, RegexOptions.Multiline);
         ERecord = regex.Matches(input).Take(count).Select(m => m.Value).ToList();
@@ -94,6 +100,11 @@ public class TicketEngine : RegexManger
     }
     protected void extractFlightDetails(string input)
     {
+        /*
+        - Example of flight details
+            1. SV  312 Q 06MAR CAIRUH HK3
+            2. SV 1469 B 07MAR RUHMED HK3 
+        */
         Regex regex = new(flighDetailsRegex, RegexOptions.Multiline);
         flightDetails = regex.Match(input).Value;
     }
@@ -146,8 +157,17 @@ public class TicketEngine : RegexManger
     }
     private void extractOldTicket(string input)
     {
-        if (string.IsNullOrEmpty(input)) {  return; }
-        else if(type != TicketType.Reissue) {
+        /*
+        - Example of old ticket part
+
+            * HISTORY TIN DATA *
+            XK NOFAL/ADNAN ISMA-/0776628941219/-EGP/4490.00/ET
+            * C
+
+        */
+        if (string.IsNullOrEmpty(input)) { return; }
+        else if (type != TicketType.Reissue)
+        {
             return;
         }
         Regex regex = new(OldTicketPart);
@@ -182,7 +202,7 @@ public class TicketEngine : RegexManger
     }
     private void extractAirline() {
         if(type == TicketType.Refund) {
-            //from database specify the refunded ticket
+            //from database specify the refunded ticket and make a refund payment
             //although the void have the flightDetails but have 
             //the same concept of refund
             return;
@@ -198,8 +218,8 @@ public class TicketEngine : RegexManger
             value *= -1;
         else if (value == 0)
             return;
-        if (value > 1)
-            value = (value % 101)/100;
+        if (value > 1)//if percentage is in integer form
+            value = (value % 101)/100;//make sure it is [0-100] and then convert it to percentage by divide over 100
         decimal output = value * FarePrice[0];
         NetPrices = NetPrices.Select(price => price - output).ToList();
     }
