@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ticketApp.Models.Dbmodels;
+using Microsoft.AspNetCore.Mvc.Filters;
 using ticketApp.Models.DBmodels;
 using ticketApp.Models.Utility;
 using ticketApp.Services;
@@ -21,11 +21,40 @@ namespace ticketApp.Controllers
             this.db = db;
             this.TEngine = TEngine;
         }
-        //Read
-        [HttpGet("show")]
-        public IActionResult Tickets()
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            return View();
+            ViewData["title"] = "tickets";
+            base.OnActionExecuting(context);
+        }
+        //Read
+        [HttpGet("list")]
+        public IActionResult list()
+        {
+            List<Ticket> tickets = db.Tickets.Where(e => true).Take(10).ToList();
+            return View(tickets);
+        }
+        [HttpPost("submit")]
+        public IActionResult submit(EnginOutput tickets)
+        {
+            if (!tickets.isOldExistinDB)
+            {
+                db.Tickets.AddRange(tickets.oldTickets);
+            }
+            db.Tickets.AddRange(tickets.newTickets);
+            if (tickets.oldTickets.Count != 0)
+            {
+                List<ReIssuedTickets> ts = tickets.newTickets.Select((t, i) =>
+                {
+                    return new ReIssuedTickets()
+                    {
+                        OldTnum = tickets.oldTickets[i].TNum,
+                        NewTicket = t
+                    };
+                }).ToList();
+                db.ReIssuedTickets.AddRange(ts);
+            }
+            db.SaveChanges();
+            return View("~/Views/Ticket/Tickets.cshtml", tickets);
         }
         //Create
         [HttpGet("create")]
@@ -41,9 +70,9 @@ namespace ticketApp.Controllers
             Client client = db.Clients.FirstOrDefault(cl => cl.NickName == "Unknown");
             IssueCompany issueCompany = db.IssueCompanies.FirstOrDefault(i => i.Name == "IATA");
             TEngine.Intializer(input);
-            EnginOutput ii = TEngine.createTickets(e,issueCompany,null,client)!;
-            
-            return View("~/Views/Ticket/Tickets.cshtml",ii);
+            EnginOutput ii = TEngine.createTickets(e, issueCompany, null, client)!;
+
+            return View("~/Views/Ticket/Tickets.cshtml", ii);
         }
         public ActionResult Index()
         {

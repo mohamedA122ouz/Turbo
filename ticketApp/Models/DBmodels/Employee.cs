@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
-using ticketApp.Models.Dbmodels;
 using ticketApp.Models.Utility;
 
 namespace ticketApp.Models.DBmodels;

@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ticketApp.Models;
-using ticketApp.Models.Dbmodels;
+
 using ticketApp.Models.DBmodels;
 
 namespace ticketApp.Controllers;
@@ -25,8 +26,9 @@ public class HomeController : Controller
     public IActionResult Employees()
     {
         // This is a placeholder for the employees view.
+        ViewData["title"] = "employees";
         Employee me = db.Employees.FirstOrDefault(e => e.Name == User.Identity.Name)!;
-        List<Employee> em = db.Employees.Take(10).Where(em => em!=me).ToList();
+        List<Employee> em = db.Employees.Include(e=>e.Person).Take(10).Where(em => em!=me).ToList();
         return View(em);
     }
 

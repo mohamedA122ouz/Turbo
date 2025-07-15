@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using ticketApp.Models.Dbmodels;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
+
 using ticketApp.Models.DBmodels;
 using ticketApp.Models.Utility;
 
@@ -14,6 +16,11 @@ namespace ticketApp.Controllers
         {
             this.db = db;
         }
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            ViewData["title"] = "Analysis";
+            base.OnActionExecuting(context);
+        }
         // GET: Analysis
         public ActionResult Index()
         {
@@ -26,7 +33,7 @@ namespace ticketApp.Controllers
                 ButtonText = "Contact"
             };
             ViewData["personCard"] = personCard;
-            List<Employee> employees = db.Employees.Take(10).OrderByDescending(emp => emp.Tickets.Where(t => t.CreatedAt > DateTime.Now.AddDays(-30)).ToList().Count).ToList();
+            List<Employee> employees = db.Employees.Include(e => e.Person).Take(10).OrderByDescending(emp => emp.Tickets.Where(t => t.CreatedAt > DateTime.Now.AddDays(-30)).ToList().Count).ToList();
             ViewData["employees"] = employees;
             return View();
         }

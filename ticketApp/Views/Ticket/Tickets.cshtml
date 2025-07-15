@@ -1,1 +1,87 @@
-﻿<partial name="~/Views/Components/Acordion.cshtml" model="Model" />
+﻿@model ticketApp.Models.Utility.EnginOutput
+@using ticketApp.Models.DBmodels;
+
+@{
+    int newTCount = Model.newTickets.Count;
+    int oldTCount = Model.oldTickets.Count;
+}
+@using (Html.BeginForm("submit", "Tickets", FormMethod.Post))
+{
+    <input type="text" value="false" name="isOldExistinDB" >
+    if (newTCount == 0)
+    {
+        <h2>new Ticket</h2>
+        <p>No Ticket Found (it may be an error)</p>
+    }
+    else
+    {
+        <h2>new Ticket@(newTCount > 1 ? "s" : "")</h2>
+
+        @for (int i = 0; i < Model.newTickets.Count; i++)
+        {
+            ViewData["Prefix"] = $"NewTickets[{i}]";
+            ViewData["Index"] = i;
+            <partial name="~/Views/Shared/Components/Acordion.cshtml" model="Model.newTickets[i]" view-data="ViewData" />
+        }
+    }
+
+    if (oldTCount == 0 && Model.newTickets[0].isAReIssued && !Model.isOldExistinDB)
+    {
+        <h2>old Ticket</h2>
+        <p>No Ticket Found (it may be an error)</p>
+    }
+    else if (oldTCount > 0 && !Model.isOldExistinDB)
+    {
+        <h2>old Ticket@(newTCount > 1 ? "s" : "")</h2>
+
+        <div id="alert-border-2"
+            class="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
+            role="alert">
+            <svg class="shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <div class="ms-3 text-sm font-medium">
+                old tickets are not exist by submitting this for old tickets will be created
+            </div>
+            <button type="button"
+                class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                data-dismiss-target="#alert-border-2" aria-label="Close">
+                <span class="sr-only">Dismiss</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
+
+        @for (int i = 0; i < Model.oldTickets.Count; i++)
+        {
+            ViewData["Prefix"] = $"OldTickets[{i}]";
+            ViewData["Index"] = i + 1000; // avoid accordion ID conflicts
+            <partial name="~/Views/Shared/Components/Acordion.cshtml" model="Model.oldTickets[i]" view-data="ViewData" />
+        }
+    }
+    else if (oldTCount > 0)
+    {
+        <h2>old Ticket@(newTCount > 1 ? "s" : "")</h2>
+
+        @for (int i = 0; i < Model.oldTickets.Count; i++)
+        {
+            ViewData["Prefix"] = $"OldTickets[{i}]";
+            ViewData["Index"] = i + 1000;
+            <partial name="~/Views/Shared/Components/Acordion.cshtml" model="Model.oldTickets[i]" view-data="ViewData" />
+        }
+    }
+
+    <button type="submit"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        Submit
+        <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M1 5h12m0 0L9 1m4 4L9 9" />
+        </svg>
+    </button>
+}

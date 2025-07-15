@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ticketApp.Models.Dbmodels;
+
 using ticketApp.Models.DBmodels;
 using ticketApp.Models.Utility;
 

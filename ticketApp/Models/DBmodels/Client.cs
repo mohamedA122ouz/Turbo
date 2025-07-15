@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using ticketApp.Models.DBmodels;
 
-namespace ticketApp.Models.Dbmodels;
+
+namespace ticketApp.Models.DBmodels;
 
 public class Client
 {

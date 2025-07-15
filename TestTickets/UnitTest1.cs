@@ -1,5 +1,4 @@
 using TestTickets.test;
-using ticketApp.Models.Dbmodels;
 using ticketApp.Models.DBmodels;
 using ticketApp.Models.Utility;
 using ticketApp.Services;

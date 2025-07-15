@@ -1,10 +1,8 @@
-using System;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ticketApp.Models.DBmodels;
 
-namespace ticketApp.Models.Dbmodels;
+
+namespace ticketApp.Models.DBmodels;
 
 public class DBContext : IdentityDbContext<Person>
 {

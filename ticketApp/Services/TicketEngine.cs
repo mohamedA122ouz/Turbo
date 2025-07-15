@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TextTemplating;
 using System.Text.RegularExpressions;
-using ticketApp.Models.Dbmodels;
+
 using ticketApp.Models.DBmodels;
 using ticketApp.Models.Utility;
 namespace ticketApp.Services;
@@ -18,6 +18,7 @@ public class RegexManger//will be moved to utilities folder
     protected string RefundRegex = @"RFND";
     protected string TicketRegex = @"NO HISTORY TIN DATA";
     protected string OldTicketPart = @"\*\sHISTORY\sTIN\sDATA\s\*(\w|\W)*\*\sC";
+    protected string NewTicketPart = @"\*\sCurrent\sTIN\sDATA\s\*(\w|\W)*\*\sET";
     protected string currencyRegex = @"(EGP|USD|SAR)";
     protected string ClientName = @"P\d+\s+(\w+(?:\s\w+)*)(/|\s)(\w+(?:\s\w+)*)(\w+)?";
 }
@@ -51,7 +52,7 @@ public class TicketEngine : RegexManger
     //need to extract destination
     //need to extract 
     /*private */
-    private DBContext db {  get; set; }
+    private DBContext db { get; set; }
     public TicketEngine(DBContext db)
     {
         this.db = db;
@@ -65,11 +66,11 @@ public class TicketEngine : RegexManger
         if (type == TicketType.Reissue)
             extractOldTicket(input);
         extractPNR(input);
-        extractTicketNums(input);
+        extractFar(input);
+        extractTicketNums();
         extractAirline();
         extractNetPrice();
         extractCurrency();
-        extractFar(input);
         extractDestination();
         initialized = true;
     }
@@ -84,11 +85,12 @@ public class TicketEngine : RegexManger
         if (count == 0)
             extractCount(input);
         Regex regex = new(ERecordRegex, RegexOptions.Multiline);
-        ERecord = regex.Matches(input).Take(count).Select(m => m.Value).ToList();
+        ERecord = regex.Matches(input).Take(type == TicketType.Reissue ? count * 2 : count).Select(m => m.Value).ToList();
     }
     protected void extractCount(string input)
     {
-        if(type == TicketType.Refund) {
+        if (type == TicketType.Refund)
+        {
             Regex regex1 = new(ERecordRegex, RegexOptions.Multiline);
             count = regex1.Matches(input).Count();
             return;
@@ -115,15 +117,18 @@ public class TicketEngine : RegexManger
         Regex PNRRegex = new(@"(\d|\w){6}");
         PNR = PNRRegex.Match(PNRLine).Value;
     }
-    public void NetPriceAddedTo(List<decimal> Values) {
+    public void NetPriceAddedTo(List<decimal> Values)
+    {
         SellPcrices = NetPrices.Select((el, i) => el + Values[i]).ToList();
     }
-    public void NetPriceAddedTo(decimal Value) {
+    public void NetPriceAddedTo(decimal Value)
+    {
         SellPcrices = NetPrices.Select((el, i) => el + Value).ToList();
     }
     protected void extractNetPrice(decimal voidedValue = 0)
     {
-        if(type == TicketType.Void) {
+        if (type == TicketType.Void)
+        {
             NetPrices = ERecord.Select(i => (decimal)voidedValue).ToList();
         }
         Regex price = new(@"\d+\.\d{2}");
@@ -149,7 +154,8 @@ public class TicketEngine : RegexManger
 
         Regex ticket = new(TicketRegex);
         Match isticket = ticket.Match(input);
-        if (isticket.Length != 0) {
+        if (isticket.Length != 0)
+        {
             type = TicketType.Ticket;
             return;
         }
@@ -175,9 +181,13 @@ public class TicketEngine : RegexManger
         Regex TicketNumbers = new(@"\d{13}");
         oldTnums = TicketNumbers.Matches(historyPart).Select(el => el.Value).ToList();
     }
-    private void extractTicketNums(string input) {
+    private void extractTicketNums()
+    {
         Regex TicketNumbers = new(@"\d{13}");
-        Tnums = ERecord.Select(el=>TicketNumbers.Match(el).Value).ToList();
+        int skipCount = 0;
+        if (type == TicketType.Reissue)
+            skipCount = count;
+        Tnums = ERecord.Skip(skipCount).Select(el => TicketNumbers.Match(el).Value).ToList();
     }
     private void extractCurrency()
     {
@@ -188,20 +198,25 @@ public class TicketEngine : RegexManger
     {
         if (type == TicketType.Refund)
             return;
-        Regex regex = new(FareRegex,RegexOptions.Multiline);
-        _FarePrice = regex.Matches(input).Select(el => {
+        Regex regex = new(FareRegex, RegexOptions.Multiline);
+        _FarePrice = regex.Matches(input).Select(el =>
+        {
             string holder = el.Value.Replace("TOT EGP", "");
             holder = holder.Replace("***ADDITIONAL", "");
             holder = holder.Replace("\n", "");
+            holder = holder.Replace("\r", "");
             return decimal.Parse(holder);
         }).ToList();
     }
-    private void extractDestination() {
-        Regex regex = new(@"\s\w\w\s");
+    private void extractDestination()
+    {
+        Regex regex = new(@"\s\w{6}\s");
         destination = regex.Match(flightDetails).Value.Trim();
     }
-    private void extractAirline() {
-        if(type == TicketType.Refund) {
+    private void extractAirline()
+    {
+        if (type == TicketType.Refund)
+        {
             //from database specify the refunded ticket and make a refund payment
             //although the void have the flightDetails but have 
             //the same concept of refund
@@ -211,32 +226,62 @@ public class TicketEngine : RegexManger
         string FlightDetail = flightDetails;
         airline = airlineRegex.Match(FlightDetail).Value;
     }
-    public void applyFareDiscount(string airline,decimal value) {
-        if(this.airline != airline) 
+    public void applyFareDiscount(string airline, decimal value)
+    {
+        if (this.airline != airline)
             return;
         if (value < 0)
             value *= -1;
         else if (value == 0)
             return;
         if (value > 1)//if percentage is in integer form
-            value = (value % 101)/100;//make sure it is [0-100] and then convert it to percentage by divide over 100
+            value = (value % 101) / 100;//make sure it is [0-100] and then convert it to percentage by divide over 100
         decimal output = value * FarePrice[0];
         NetPrices = NetPrices.Select(price => price - output).ToList();
     }
-    public EnginOutput? createTickets(Employee emp,IssueCompany issueCompany,Broker? broker=null,Client? client = null) {
-        if (!initialized) {
+    public EnginOutput? createTickets(Employee emp, IssueCompany issueCompany, Broker? broker = null, Client? client = null)
+    {
+        if (!initialized)
+        {
             return null;
         }
         EnginOutput? output = new();
-        if(type == TicketType.Reissue)
-            output.oldTickets = oldTnums.Select(tNum => db.Tickets.FirstOrDefault(t => t.TNum == tNum)).ToList();
-        if (client == null) {
+        if (client == null)
+        {
             client = db.Clients.FirstOrDefault(c => c.Name == "Unknown")!;
         }
-        if(SellPcrices == null)
+        if (SellPcrices == null)
             NetPriceAddedTo(0);
-        output.newTickets = TicketNumbers.Select((t,i) => {
-            return new Ticket() {
+        if (type == TicketType.Reissue)
+        {
+            output.oldTickets = oldTnums.Select(
+                (tNum, i) =>
+                {
+                    Ticket? t = db.Tickets.FirstOrDefault(t => t.TNum == tNum);
+                    if (t != null)
+                        return t;//Old Ticket if exist
+                    //what if reissue for non exist ticket
+                    output.isOldExistinDB = false;
+                    return new Ticket()
+                    {
+                        Airline = airline,
+                        Client = client,
+                        Employee = emp,
+                        Broker = broker,
+                        IssueCompany = issueCompany,
+                        NetPrice = NetPrices[i],
+                        PNR = PNR,
+                        isAReIssued = type == TicketType.Reissue,
+                        TNum = oldTnums[i],
+                        Destination = destination,
+                        SellPrice = SellPcrices[i],
+                    };
+                }).ToList();
+        }
+        output.newTickets = TicketNumbers.Select((t, i) =>
+        {
+            return new Ticket()
+            {
                 Airline = airline,
                 Client = client,
                 Employee = emp,
@@ -252,9 +297,11 @@ public class TicketEngine : RegexManger
         }).ToList();
         return output;
     }
-    public CreationStatus SaveTicketToDB(Ticket ticket) {
+    public CreationStatus SaveTicketToDB(Ticket ticket)
+    {
         ticket.Employee.Tickets.Add(ticket);
-        if (ticket.Broker != null) {
+        if (ticket.Broker != null)
+        {
             ticket.Broker.Tickets.Add(ticket);
             ticket.Broker.Balance -= ticket.NetPrice; // Broker's balance should be decreased by the ticket price
         }
@@ -262,59 +309,75 @@ public class TicketEngine : RegexManger
             ticket.Employee.Balance -= ticket.NetPrice;
         // Issued ticket should be subtracted from the employee's balance and the issue company's balance
         ticket.IssueCompany.Balance -= ticket.NetPrice;
-        if (string.IsNullOrWhiteSpace(ticket.PNR) || string.IsNullOrWhiteSpace(ticket.Airline) || string.IsNullOrWhiteSpace(ticket.TNum) || ticket.NetPrice <= 0) {
+        if (string.IsNullOrWhiteSpace(ticket.PNR) || string.IsNullOrWhiteSpace(ticket.Airline) || string.IsNullOrWhiteSpace(ticket.TNum) || ticket.NetPrice <= 0)
+        {
             return CreationStatus.InputError;
         }
-        if (db.Tickets.Any(t => t.PNR == ticket.PNR)) {
+        if (db.Tickets.Any(t => t.PNR == ticket.PNR))
+        {
             return CreationStatus.AlreadyExists;
         }
 
         db.Tickets.Add(ticket);
-        try {
+        try
+        {
             db.SaveChanges();
             return CreationStatus.Success;
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             return CreationStatus.Failure;
         }
     }
-    public CreationStatus NoRevisiounCreation(string ticketDetails, Employee emp, Broker? broker, Client client, IssueCompany issueCompany, Func<Ticket, CreationStatus, bool>? func = null) {
+    public CreationStatus NoRevisiounCreation(string ticketDetails, Employee emp, Broker? broker, Client client, IssueCompany issueCompany, Func<Ticket, CreationStatus, bool>? func = null)
+    {
 
-        if (string.IsNullOrWhiteSpace(ticketDetails)) {
+        if (string.IsNullOrWhiteSpace(ticketDetails))
+        {
             return CreationStatus.InputError;
         }
         EnginOutput? EOutput = createTickets(emp, issueCompany, broker, client);
         if (EOutput == null)
             return CreationStatus.Failure;
-        EnginTicketSave(EOutput,func);
+        EnginTicketSave(EOutput, func);
         return CreationStatus.Success;
     }
-    public (CreationStatus, EnginOutput?) EnginTicketSave(EnginOutput EOutput, Func<Ticket, CreationStatus, bool>? func = null) {
-        if(type == TicketType.Reissue && EOutput.oldTickets.Count != EOutput.newTickets.Count) {
+    public (CreationStatus, EnginOutput?) EnginTicketSave(EnginOutput EOutput, Func<Ticket, CreationStatus, bool>? func = null)
+    {
+        if (type == TicketType.Reissue && EOutput.oldTickets.Count != EOutput.newTickets.Count)
+        {
             return (CreationStatus.NotFound, EOutput);
         }
-        foreach (Ticket t in EOutput.newTickets) {
+        foreach (Ticket t in EOutput.newTickets)
+        {
             CreationStatus i = SaveTicketToDB(t);
-            if (i != CreationStatus.Success) {
+            if (i != CreationStatus.Success)
+            {
                 if (func != null)
                     func(t, i);
-                else {
-                    if (i == CreationStatus.Failure) {
+                else
+                {
+                    if (i == CreationStatus.Failure)
+                    {
                         return (CreationStatus.Failure, EOutput);
                     }
-                    else if (i == CreationStatus.AlreadyExists) {
+                    else if (i == CreationStatus.AlreadyExists)
+                    {
                         return (CreationStatus.Failure, EOutput);
                     }
                 }
             }
         }
         //only if reissue
-        if(TicketType.Reissue == type) {
+        if (TicketType.Reissue == type)
+        {
             int i = 0;
-            foreach (Ticket t in EOutput.newTickets) {
+            foreach (Ticket t in EOutput.newTickets)
+            {
                 Ticket oldTicket = EOutput.oldTickets[i++];
                 oldTicket.isAReIssued = true;
-                db.ReIssuedTickets.Add(new() {
+                db.ReIssuedTickets.Add(new()
+                {
                     OldTnum = oldTicket.TNum,
                     NewTicket = t
                 });

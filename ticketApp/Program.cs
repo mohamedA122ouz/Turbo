@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ticketApp.Models.Dbmodels;
+
 using ticketApp.Models.DBmodels;
 using ticketApp.Services;
 

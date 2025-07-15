@@ -1,7 +1,7 @@
 
 
 using System.ComponentModel.DataAnnotations.Schema;
-using ticketApp.Models.Dbmodels;
+
 
 namespace ticketApp.Models.DBmodels;
 
