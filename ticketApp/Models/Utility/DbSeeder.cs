@@ -59,7 +59,7 @@ public static class DbSeeder {
         }
         //5. Add to Clients table if not already
 
-        Client c1 = dbContext.Clients.FirstOrDefault(e => e.Name == "virtualUser")!;
+        Client c1 = dbContext.Clients.FirstOrDefault(e => e.NickName == configurations["VClient:NickName"])!;
         if (c1 == null)
         {
             var VClientPerson = new Person

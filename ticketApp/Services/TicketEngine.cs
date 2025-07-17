@@ -239,8 +239,9 @@ public class TicketEngine : RegexManger
         decimal output = value * FarePrice[0];
         NetPrices = NetPrices.Select(price => price - output).ToList();
     }
-    public EnginOutput? createTickets(Employee emp, IssueCompany issueCompany, Broker? broker = null, Client? client = null)
+    public EnginOutput? createTickets(Employee emp, IssueCompany issueCompany, Broker? broker = null, Client? client = null, decimal saleIncreaseValue = 0)
     {
+        int i = 0;
         if (!initialized)
         {
             return null;
@@ -251,11 +252,11 @@ public class TicketEngine : RegexManger
             client = db.Clients.FirstOrDefault(c => c.Name == "Unknown")!;
         }
         if (SellPcrices == null)
-            NetPriceAddedTo(0);
+            NetPriceAddedTo(saleIncreaseValue);
         if (type == TicketType.Reissue)
         {
             output.oldTickets = oldTnums.Select(
-                (tNum, i) =>
+                (tNum) =>
                 {
                     Ticket? t = db.Tickets.FirstOrDefault(t => t.TNum == tNum);
                     if (t != null)
@@ -269,17 +270,29 @@ public class TicketEngine : RegexManger
                         Employee = emp,
                         Broker = broker,
                         IssueCompany = issueCompany,
-                        NetPrice = NetPrices[i],
+                        //notice sell and net price for old tickets comes first
+                        NetPrice = NetPrices[i],//must be global iterator to cause the netPrice is list of poth issue and reissue tickets net price
                         PNR = PNR,
                         isAReIssued = type == TicketType.Reissue,
                         TNum = oldTnums[i],
                         Destination = destination,
-                        SellPrice = SellPcrices[i],
+                        SellPrice = SellPcrices[i++],//must be global iterator to cause the sellPrice is list of poth issue and reissue tickets sell price
+                        ClientId = client.Id,
+                        EmployeeId = emp.Id
                     };
                 }).ToList();
         }
-        output.newTickets = TicketNumbers.Select((t, i) =>
+        output.newTickets = TicketNumbers.Select((t, ii) =>
         {
+
+            // decimal netNetPrice = NetPrices[i];//must use global iterator to cause the netPrice is list of poth issue and reissue tickets net price
+            // decimal netSellPrice = SellPcrices[i++];//must be global iterator to cause the sellPrice is list of poth issue and reissue tickets sell price
+            // //the iterator must be increasing at the last use to get ready for the next step
+            // if (type == TicketType.Reissue)
+            // {
+            //     netNetPrice -= NetPrices[ii];//cause the new ticket must substract old ticket value (already paid part)
+            //     netSellPrice -= SellPcrices[ii];//same thing here
+            // }
             return new Ticket()
             {
                 Airline = airline,
@@ -287,19 +300,23 @@ public class TicketEngine : RegexManger
                 Employee = emp,
                 Broker = broker,
                 IssueCompany = issueCompany,
-                NetPrice = NetPrices[i],
+                NetPrice = NetPrices[i],//must use global iterator to cause the netPrice is list of poth issue and reissue tickets net price
                 PNR = PNR,
                 isAReIssued = type == TicketType.Reissue,
                 TNum = t,
                 Destination = destination,
-                SellPrice = SellPcrices[i]
+                SellPrice = SellPcrices[i++],//must be global iterator to cause the sellPrice is list of poth issue and reissue tickets sell price
+                ClientId = client.Id,
+                EmployeeId = emp.Id,
             };
         }).ToList();
         return output;
     }
     public CreationStatus SaveTicketToDB(Ticket ticket)
     {
+        db.Tickets.Add(ticket);
         ticket.Employee.Tickets.Add(ticket);
+        db.Entry(ticket).Reference(t => t.IssueCompany).Load();
         if (ticket.Broker != null)
         {
             ticket.Broker.Tickets.Add(ticket);
@@ -318,7 +335,6 @@ public class TicketEngine : RegexManger
             return CreationStatus.AlreadyExists;
         }
 
-        db.Tickets.Add(ticket);
         try
         {
             db.SaveChanges();

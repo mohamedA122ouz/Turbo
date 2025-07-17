@@ -1,6 +1,8 @@
 
 
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace ticketApp.Models.DBmodels;
@@ -15,17 +17,22 @@ public class Ticket
     public required string TNum { get; set; }
     [ForeignKey("EmployeeId")]
     public int EmployeeId { get; set; }
-    public required Employee Employee { get; set; }
+    [Required]
+    public Employee Employee { get; set; }
     [ForeignKey("BrokerId")]
     public int? BrokerId { get; set; }
     public Broker? Broker { get; set; }
     public required decimal NetPrice { get; set; }
     public required decimal SellPrice { get; set; }
     public List<Payment> Payments { get; set; } = new List<Payment>();
-    public required Client Client { get; set; }
+    [ForeignKey("ClientId")]
+    public int ClientId { get; set; }
+    [Required]
+    public Client Client { get; set; }
     [ForeignKey("IssueCompanyId")]
     public int IssueCompanyId { get; set; }
-    public required IssueCompany IssueCompany { get; set; }
+    [Required]
+    public IssueCompany IssueCompany { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 }

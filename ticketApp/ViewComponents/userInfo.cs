@@ -23,8 +23,10 @@ public class UserInfoViewComponent : ViewComponent
             return View(null); // Will show guest message
 
         var currentUser = await _userManager.GetUserAsync(UserClaimsPrincipal);
-        Employee emp = db.Employees.Include(e => e.Person).FirstOrDefault(e => e.personId == currentUser.Id);
-
+        Employee? emp = null;
+        if(currentUser != null)
+            emp = db.Employees.Include(e => e.Person).FirstOrDefault(e => e.personId == currentUser.Id);
+        ViewData["employee"] = emp;
         return View(emp);
     }
 }

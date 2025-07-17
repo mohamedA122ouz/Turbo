@@ -4,10 +4,46 @@
 @{
     int newTCount = Model.newTickets.Count;
     int oldTCount = Model.oldTickets.Count;
+    List<IssueCompany> issueCompanies = ViewData["issueCompanies"] as List<IssueCompany>;
 }
 @using (Html.BeginForm("submit", "Tickets", FormMethod.Post))
 {
-    <input type="text" value="false" name="isOldExistinDB" >
+    Html.AntiForgeryToken();
+
+    <div class="max-w-md">
+        <div class="flex">
+            <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Issue company</label>
+            <button id="dropdown-button" data-dropdown-toggle="dropdown44"
+                class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+                type="button"><span class="IssueCompanyText">Issue Companies</span> <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 4 4 4-4" />
+                </svg></button>
+            <div id="dropdown44"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+                    @foreach (IssueCompany company in issueCompanies)
+                    {
+                        <li>
+                            <button type="button" onclick="chooseCompany(this)"
+                                class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                @company.Name
+                                <span style="visibility: hidden;" class="issueCID">@company.Id</span>
+                                </button>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="relative w-full">
+                <input type="search" id="search-dropdown"
+                    class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                    placeholder="Search Issue companies" oninput=""/>
+            </div>
+        </div>
+    </div>
+
+    <input type="text" style="visibility: hidden;" value="false" name="isOldExistinDB">
     if (newTCount == 0)
     {
         <h2>new Ticket</h2>
@@ -19,7 +55,7 @@
 
         @for (int i = 0; i < Model.newTickets.Count; i++)
         {
-            ViewData["Prefix"] = $"NewTickets[{i}]";
+            ViewData["Prefix"] = $"newTickets[{i}]";
             ViewData["Index"] = i;
             <partial name="~/Views/Shared/Components/Acordion.cshtml" model="Model.newTickets[i]" view-data="ViewData" />
         }
@@ -69,7 +105,7 @@
 
         @for (int i = 0; i < Model.oldTickets.Count; i++)
         {
-            ViewData["Prefix"] = $"OldTickets[{i}]";
+            ViewData["Prefix"] = $"oldTickets[{i}]";
             ViewData["Index"] = i + 1000;
             <partial name="~/Views/Shared/Components/Acordion.cshtml" model="Model.oldTickets[i]" view-data="ViewData" />
         }
@@ -85,3 +121,25 @@
         </svg>
     </button>
 }
+<script>
+    function editDestination(inputName) {
+        console.log("wait");
+        const input = document.querySelector(`[name="${inputName}"]`);
+        const from = document.querySelector(`[name="${inputName}From"]`);;
+        const to = document.querySelector(`[name="${inputName}To"]`);;
+        input.value = from.value + to.value;
+    }
+    function chooseCompany(element){
+        console.log(element);
+        console.log(element.textContent);
+        const button = document.querySelector(`[data-dropdown-toggle="dropdown44"]`);
+        const text = document.querySelector(".IssueCompanyText");
+        const IssueCompanyID = element.querySelector(".issueCID");
+        const ISSUECOMANYID = document.querySelectorAll(".ISSUECOMANYID");
+        text.innerHTML = element.innerHTML;
+        ISSUECOMANYID.forEach(el=>{
+            el.value = IssueCompanyID.textContent;
+        });
+        button.click();
+    }
+</script>

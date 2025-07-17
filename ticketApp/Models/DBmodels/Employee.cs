@@ -1,5 +1,5 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity;
 using ticketApp.Models.Utility;
 
 namespace ticketApp.Models.DBmodels;
@@ -10,7 +10,8 @@ public class Employee
     public string Name { get; set; }
     public string PhoneNum { get; set; }
     public List<Ticket> Tickets { get; set; }
-    public required EmployeeType EmployeeType { get; set; }
+    [Required]
+    public EmployeeType EmployeeType { get; set; }
     public List<Broker> Prokers { get; set; } = new List<Broker>();
     [ForeignKey("PrivilegesId")]
     public int PrivilegesId { get; set; } = 2;// Default to User privileges "Ticket Agent"

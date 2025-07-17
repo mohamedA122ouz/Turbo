@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ticketApp.Models.DBmodels;
 
-
 #nullable disable
 
 namespace ticketApp.Migrations
@@ -176,7 +175,7 @@ namespace ticketApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Balance");
+                    b.ToTable("Balance", (string)null);
                 });
 
             modelBuilder.Entity("ticketApp.Models.DBmodels.Broker", b =>
@@ -209,7 +208,7 @@ namespace ticketApp.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Brokers");
+                    b.ToTable("Brokers", (string)null);
                 });
 
             modelBuilder.Entity("ticketApp.Models.DBmodels.Employee", b =>
@@ -254,7 +253,7 @@ namespace ticketApp.Migrations
                     b.HasIndex("personId")
                         .IsUnique();
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("ticketApp.Models.DBmodels.Person", b =>
@@ -348,7 +347,7 @@ namespace ticketApp.Migrations
                     b.HasIndex("NewTicketId")
                         .IsUnique();
 
-                    b.ToTable("ReIssuedTickets");
+                    b.ToTable("ReIssuedTickets", (string)null);
                 });
 
             modelBuilder.Entity("ticketApp.Models.DBmodels.Ticket", b =>
@@ -409,7 +408,7 @@ namespace ticketApp.Migrations
 
                     b.HasIndex("IssueCompanyId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("ticketApp.Models.Dbmodels.Client", b =>
@@ -441,7 +440,7 @@ namespace ticketApp.Migrations
                     b.HasIndex("personId")
                         .IsUnique();
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("ticketApp.Models.Dbmodels.IssueCompany", b =>
@@ -461,7 +460,7 @@ namespace ticketApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IssueCompanies");
+                    b.ToTable("IssueCompanies", (string)null);
 
                     b.HasData(
                         new
@@ -565,7 +564,7 @@ namespace ticketApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Privileges");
+                    b.ToTable("Privileges", (string)null);
 
                     b.HasData(
                         new
@@ -633,7 +632,7 @@ namespace ticketApp.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

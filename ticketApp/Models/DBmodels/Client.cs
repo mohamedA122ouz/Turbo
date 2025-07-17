@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -7,7 +8,8 @@ namespace ticketApp.Models.DBmodels;
 public class Client
 {
     public int Id { get; set; }
-    public required string Name { get; set; }
+    [Required]
+    public string Name { get; set; }
     public string NickName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; }
     [ForeignKey("personId")]

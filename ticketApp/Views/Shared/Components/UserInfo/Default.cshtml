@@ -1,6 +1,9 @@
-﻿@model ticketApp.Models.DBmodels.Employee
+﻿@using ticketApp.Models.DBmodels;
+@{
+    Employee? emp = (Employee?)ViewData["employee"];
+}
 
-@if (Model != null)
+@if (emp != null)
 {
     <span>@Model.Name!</span>
 }

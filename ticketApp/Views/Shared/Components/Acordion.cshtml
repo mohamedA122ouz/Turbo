@@ -18,6 +18,12 @@
         </button>
     </h2>
     <div id="accordion-collapse-body-@i" class="hidden" aria-labelledby="accordion-collapse-heading-@i">
+        <div style="visibility: hidden;">
+            <input class="ISSUECOMANYID" name="@($"{prefix}.IssueCompanyId")"  value=@(Model.IssueCompany.Id) />
+            <input  name="@($"{prefix}.BrokerId")"  value="@(Model.Broker!=null?Model.Broker.Id:"")" />
+            <input  name="@($"{prefix}.EmployeeId")"  value="@(Model.EmployeeId)" />
+            <input  name="@($"{prefix}.ClientId")"  value="@(Model.ClientId)" />
+        </div>
         <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark">
             <div class="ticket">
                 <div class="pnr">
@@ -28,40 +34,52 @@
                 </div>
                 <div class="destination">
                     <div class="airport from">
+                        <input name="@($"{prefix}.Destination")" style="visibility: hidden;"
+                            value="@(Model.Destination)" />
                         <p>from</p>
                         <h3 contenteditable="true" id="from">
                             <input name="@($"{prefix}.DestinationFrom")"
-                                   value="@(Model.Destination?.Substring(0, Math.Min(3, Model.Destination.Length)))"
-                                   style="background-color:transparent;" size="3" />
+                                oninput='editDestination("@($"{prefix}.Destination")")'
+                                value="@(Model.Destination?.Substring(0, Math.Min(3, Model.Destination.Length)))"
+                                style="background-color:transparent;" size="3" />
                         </h3>
                     </div>
                     <div class="airplaneIconContainer">
                         <svg id="plane" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 250 250"
-                             preserveAspectRatio="xMidYMid meet">
+                            preserveAspectRatio="xMidYMid meet">
                             <path style="transform: rotate(149deg);transform-origin: 45% 44%;"
-                                  d="M194.67321 0 70.641958 53.625c-10.38227-6.92107-34.20058-21.27539-38.90545-23.44898-39.4400301-18.22079-36.9454001 14.73107-20.34925 24.6052 4.53917 2.70065 27.72352 17.17823 43.47345 26.37502l17.90625 133.9375 22.21875 13.15625 11.531252-120.9375 71.53125 36.6875 3.84375 39.21875 14.53125 8.625 11.09375-42.40625.125.0625 30.8125-31.53125-14.875-8-35.625 16.90625-68.28125-42.4375L217.36071 12.25 194.67321 0z" />
+                                d="M194.67321 0 70.641958 53.625c-10.38227-6.92107-34.20058-21.27539-38.90545-23.44898-39.4400301-18.22079-36.9454001 14.73107-20.34925 24.6052 4.53917 2.70065 27.72352 17.17823 43.47345 26.37502l17.90625 133.9375 22.21875 13.15625 11.531252-120.9375 71.53125 36.6875 3.84375 39.21875 14.53125 8.625 11.09375-42.40625.125.0625 30.8125-31.53125-14.875-8-35.625 16.90625-68.28125-42.4375L217.36071 12.25 194.67321 0z" />
                         </svg>
                     </div>
                     <div class="airport to">
                         <p>to</p>
                         <h3 contenteditable="true" id="to">
                             <input name="@($"{prefix}.DestinationTo")"
-                                   value="@(Model.Destination?.Length > 3 ? Model.Destination.Substring(3) : "")"
-                                   style="background-color:transparent;" size="3" />
+                                value="@(Model.Destination?.Length > 3 ? Model.Destination.Substring(3) : "")"
+                                style="background-color:transparent;" size="3" />
                         </h3>
                     </div>
                 </div>
                 <div class="detailsBar">
                     <div class="passengerDetails">
+                        <h4>Airline</h4>
+                        <p contenteditable="true" id="name">
+                            <input name="@($"{prefix}.Airline")" value="@Model.Airline"
+                                style="background-color:transparent;" size="1" />
+                        </p>
+                    </div>
+                    <div class="passengerDetails">
                         <h4>Passenger NickName</h4>
                         <p contenteditable="true" id="name">
-                            <input name="@($"{prefix}.Client.NickName")" value="@Model.Client?.NickName" style="background-color:transparent;" size="20" />
+                            <input name="@($"{prefix}.Client.NickName")" value="@Model.Client?.NickName"
+                                style="background-color:transparent;" size="20" />
                         </p>
                     </div>
                     <div class="ticketNumber">
                         <h4>Ticket Number</h4>
                         <p contenteditable="true" id="tnum">
-                            <input name="@($"{prefix}.TNum")" value="@Model.TNum" style="background-color:transparent;" size="13" />
+                            <input name="@($"{prefix}.TNum")" value="@Model.TNum" style="background-color:transparent;"
+                                size="13" />
                         </p>
                     </div>
                     <div class="issueDate">
@@ -71,13 +89,15 @@
                     <div class="sellPrice">
                         <h4>Sell Price</h4>
                         <p contenteditable="true" id="date">
-                            <input name="@($"{prefix}.SellPrice")" value="@Model.SellPrice" style="background-color:transparent;" size="6" />&nbsp;EGP
+                            <input name="@($"{prefix}.SellPrice")" value="@Model.SellPrice"
+                                style="background-color:transparent;" size="6" />&nbsp;EGP
                         </p>
                     </div>
                     <div class="netPrice">
                         <h4>Net Price</h4>
                         <p contenteditable="true" id="date">
-                            <input name="@($"{prefix}.NetPrice")" value="@Model.NetPrice" style="background-color:transparent;" size="6" />&nbsp;EGP
+                            <input name="@($"{prefix}.NetPrice")" value="@Model.NetPrice"
+                                style="background-color:transparent;" size="6" />&nbsp;EGP
                         </p>
                     </div>
                 </div>
