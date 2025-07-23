@@ -1,0 +1,44 @@
+#search-dropdown {
+    width: 10px;
+}
+
+[data-stretching="true"] {
+    animation: stretching 500ms forwards;
+    animation-delay: 500ms;
+}
+
+#search-button {
+    width: 20%;
+    left: 0;
+}
+
+[data-btnAnimation="true"] {
+    animation: BtnAnimation 800ms forwards;
+}
+
+@keyframes stretching {
+    0% {
+        width: 10px;
+    }
+
+    100% {
+        width: 80%;
+    }
+}
+
+@keyframes BtnAnimation {
+    0% {
+        left: 0%;
+        width: 20%;
+    }
+
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+
+    100% {
+        left: 80%;
+        width: 20%;
+    }
+}

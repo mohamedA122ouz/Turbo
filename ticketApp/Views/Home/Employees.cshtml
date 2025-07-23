@@ -1,5 +1,4 @@
-﻿
-@model List<ticketApp.Models.DBmodels.Employee>
+﻿@model List<ticketApp.Models.DBmodels.Employee>
 
 
 
@@ -12,38 +11,41 @@
         <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach (var employee in Model)
             {
-                <li class="py-3 sm:py-4">
-                    <div class="flex items-center">
-                        <div class="shrink-0">
-                            @if (employee.ImagePath != null)
-                            {
-                                <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg"
-                                    alt="Neil image">
-                            }
-                            else
-                            {
-                                <div class="w-16 h-16 mb-3 rounded-full bg-gray-200 flex items-center justify-center shadow-lg">
-                                    <span class="text-gray-500"
-                                        style="font-size: large;">@employee.Name[0].ToString().ToUpper()</span>
-                                </div>
-                            }
+                <a href="/employee?id=@employee.Id">
+                    <li class="py-3 sm:py-4">
+                        <div class="flex items-center">
+                            <div class="shrink-0">
+                                @if (employee.ImagePath != null)
+                                {
+                                    <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg"
+                                        alt="Neil image">
+                                }
+                                else
+                                {
+                                    <div
+                                        class="w-16 h-16 mb-3 rounded-full bg-gray-200 flex items-center justify-center shadow-lg">
+                                        <span class="text-gray-500"
+                                            style="font-size: large;">@employee.Name[0].ToString().ToUpper()</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="flex-1 min-w-0 ms-4">
+                                <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                    @employee.Name
+                                </p>
+                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                    @employee.Person.Email;
+                                </p>
+                            </div>
+                            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+                                style="color:@(employee.Balance < 0 ? "red" : "green")">
+                                @employee.Balance.ToString("N2") EGP
+                            </div>
+
                         </div>
-                        
-                        <div class="flex-1 min-w-0 ms-4">
-                            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                @employee.Name
-                            </p>
-                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                @employee.Person.Email;
-                            </p>
-                        </div>
-                        <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
-                        style="color:@(employee.Balance < 0 ? "red" : "green")">
-                            @employee.Balance EGP
-                        </div>
-                        
-                    </div>
-                </li>
+                    </li>
+                </a>
             }
         </ul>
     </div>

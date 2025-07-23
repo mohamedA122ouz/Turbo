@@ -1,28 +1,37 @@
 ﻿@model ticketApp.Models.Utility.EnginOutput
 @using ticketApp.Models.DBmodels;
-
 @{
     int newTCount = Model.newTickets.Count;
     int oldTCount = Model.oldTickets.Count;
     List<IssueCompany> issueCompanies = ViewData["issueCompanies"] as List<IssueCompany>;
 }
+<style>
+    .line {
+        margin: 10px;
+        padding: 10px;
+        border-bottom: 2px solid black;
+    }
+</style>
+<link rel="stylesheet" href="~/css/searchElement.css" />
 @using (Html.BeginForm("submit", "Tickets", FormMethod.Post))
 {
     Html.AntiForgeryToken();
 
     <div class="max-w-md">
         <div class="flex">
-            <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Issue company</label>
+            <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Issue
+                company</label>
             <button id="dropdown-button" data-dropdown-toggle="dropdown44"
                 class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
-                type="button"><span class="IssueCompanyText">Issue Companies</span> <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                type="button"><span class="IssueCompanyText">Issue Companies</span> <svg class="w-2.5 h-2.5 ms-2.5"
+                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m1 1 4 4 4-4" />
                 </svg></button>
             <div id="dropdown44"
                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button"
+                    style="box-shadow: 0 0 13px -4px black;">
                     @foreach (IssueCompany company in issueCompanies)
                     {
                         <li>
@@ -30,7 +39,7 @@
                                 class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                 @company.Name
                                 <span style="visibility: hidden;" class="issueCID">@company.Id</span>
-                                </button>
+                            </button>
                         </li>
                     }
                 </ul>
@@ -38,7 +47,16 @@
             <div class="relative w-full">
                 <input type="search" id="search-dropdown"
                     class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-                    placeholder="Search Issue companies" oninput=""/>
+                    placeholder="Search Issue companies" oninput="" />
+                <button type="button" id="search-button"
+                    class="absolute top-0 end-0 h-full p-2.5 text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                    <span class="sr-only">Search</span>
+                </button>
             </div>
         </div>
     </div>
@@ -46,12 +64,12 @@
     <input type="text" style="visibility: hidden;" value="false" name="isOldExistinDB">
     if (newTCount == 0)
     {
-        <h2>new Ticket</h2>
+        <h2 class="text-2xl line">new Ticket</h2>
         <p>No Ticket Found (it may be an error)</p>
     }
     else
     {
-        <h2>new Ticket@(newTCount > 1 ? "s" : "")</h2>
+        <h2 class="text-2xl line">new Ticket@(newTCount > 1 ? "s" : "")</h2>
 
         @for (int i = 0; i < Model.newTickets.Count; i++)
         {
@@ -63,12 +81,12 @@
 
     if (oldTCount == 0 && Model.newTickets[0].isAReIssued && !Model.isOldExistinDB)
     {
-        <h2>old Ticket</h2>
+        <h2 class="text-2xl line">Old Ticket</h2>
         <p>No Ticket Found (it may be an error)</p>
     }
     else if (oldTCount > 0 && !Model.isOldExistinDB)
     {
-        <h2>old Ticket@(newTCount > 1 ? "s" : "")</h2>
+        <h2 class="text-2xl line">Old Ticket@(newTCount > 1 ? "s" : "")</h2>
 
         <div id="alert-border-2"
             class="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
@@ -79,7 +97,7 @@
                     d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
             <div class="ms-3 text-sm font-medium">
-                old tickets are not exist by submitting this for old tickets will be created
+                Old Tickets are not exist by submitting this for Old Tickets will be created
             </div>
             <button type="button"
                 class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
@@ -101,7 +119,7 @@
     }
     else if (oldTCount > 0)
     {
-        <h2>old Ticket@(newTCount > 1 ? "s" : "")</h2>
+        <h2 class="text-2xl line">Old Ticket@(newTCount > 1 ? "s" : "")</h2>
 
         @for (int i = 0; i < Model.oldTickets.Count; i++)
         {
@@ -121,6 +139,7 @@
         </svg>
     </button>
 }
+<script src="~/js/searchElement.js"></script>
 <script>
     function editDestination(inputName) {
         console.log("wait");
@@ -129,7 +148,7 @@
         const to = document.querySelector(`[name="${inputName}To"]`);;
         input.value = from.value + to.value;
     }
-    function chooseCompany(element){
+    function chooseCompany(element) {
         console.log(element);
         console.log(element.textContent);
         const button = document.querySelector(`[data-dropdown-toggle="dropdown44"]`);
@@ -137,7 +156,7 @@
         const IssueCompanyID = element.querySelector(".issueCID");
         const ISSUECOMANYID = document.querySelectorAll(".ISSUECOMANYID");
         text.innerHTML = element.innerHTML;
-        ISSUECOMANYID.forEach(el=>{
+        ISSUECOMANYID.forEach(el => {
             el.value = IssueCompanyID.textContent;
         });
         button.click();

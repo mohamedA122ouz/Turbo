@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ticketApp.Models.DBmodels;
 
@@ -11,9 +12,11 @@ using ticketApp.Models.DBmodels;
 namespace ticketApp.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20250722191750_adding net balance")]
+    partial class addingnetbalance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -585,7 +588,7 @@ namespace ticketApp.Migrations
 
                     b.Property<string>("TNum")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isAReIssued")
                         .HasColumnType("bit");
@@ -599,9 +602,6 @@ namespace ticketApp.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.HasIndex("IssueCompanyId");
-
-                    b.HasIndex("TNum")
-                        .IsUnique();
 
                     b.ToTable("Tickets");
                 });

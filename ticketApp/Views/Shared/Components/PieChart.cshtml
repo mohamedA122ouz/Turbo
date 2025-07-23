@@ -264,6 +264,7 @@
 
     if (document.getElementById("pie-chart") && typeof ApexCharts !== 'undefined') {
         setTimeout(() => {
+            console.log("woring");
             const chart = new ApexCharts(document.getElementById("pie-chart"), getChartOptions());
             chart.render();
         }, 1000);

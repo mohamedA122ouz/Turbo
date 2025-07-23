@@ -29,6 +29,7 @@ public class DBContext : IdentityDbContext<Person>
         builder.Entity<IssueCompany>().HasMany(i => i.Tickets).WithOne(t => t.IssueCompany).OnDelete(DeleteBehavior.Cascade);
         builder.Entity<Person>().HasOne(p => p.Employee).WithOne(e => e.Person).HasForeignKey<Employee>(e=>e.personId);
         builder.Entity<Person>().HasOne(p=>p.client).WithOne(e => e.Person).HasForeignKey<Client>(c=>c.personId);
+        builder.Entity<Ticket>().HasIndex(t => t.TNum).IsUnique();
         builder.Entity<ReIssuedTickets>().HasOne(t => t.NewTicket).WithOne().OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(builder);
         builder.Entity<Privileges>().HasData(
