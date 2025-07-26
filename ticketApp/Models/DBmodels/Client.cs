@@ -16,4 +16,6 @@ public class Client
     public string personId { get; set; }
     public Person Person { get; set; }
     public List<Ticket> Ticket { get; set; } = new List<Ticket>();
+    //does client need balance like Employee??
+    public decimal balance { get; set; } = 0;
 }

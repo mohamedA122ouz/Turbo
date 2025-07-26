@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Analysis\Payment\" />
     <Folder Include="wwwroot\fonts\" />
   </ItemGroup>
 

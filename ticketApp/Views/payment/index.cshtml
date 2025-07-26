@@ -1,0 +1,143 @@
+﻿@{
+    var employees = ViewData["employees"] as List<ticketApp.Models.DBmodels.Employee>;
+    var brokers = ViewData["brokers"] as List<ticketApp.Models.DBmodels.Broker>;
+    var issueCompanies = ViewData["issueCompanies"] as List<ticketApp.Models.DBmodels.IssueCompany>;
+}
+
+<div class="w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800"
+        id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
+        <li class="me-2">
+            <button id="employees-tab" data-tabs-target="#employees" type="button" role="tab" aria-controls="employees"
+                aria-selected="false"
+                class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Employees</button>
+        </li>
+        <li class="me-2">
+            <button id="services-tab" data-tabs-target="#borkers" type="button" role="tab" aria-controls="borkers"
+                aria-selected="false"
+                class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Brokers</button>
+        </li>
+        <li class="me-2">
+            <button id="services-tab" data-tabs-target="#issue" type="button" role="tab" aria-controls="issue"
+                aria-selected="false"
+                class="inline-block p-4 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300">Issue
+                Companies</button>
+        </li>
+    </ul>
+    <div id="defaultTabContent">
+        <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="employees" role="tabpanel"
+            aria-labelledby="employees-tab">
+            <div class="flow-root">
+                <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach (var employee in employees)
+                    {
+                        <a href="/employee?id=@employee.Id">
+                            <li class="py-3 sm:py-4">
+                                <div class="flex items-center">
+                                    <div class="shrink-0">
+                                        @if (employee.ImagePath != null)
+                                        {
+                                            <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg"
+                                                alt="Neil image">
+                                        }
+                                        else
+                                        {
+                                            <div
+                                                class="w-16 h-16 mb-3 rounded-full bg-gray-200 flex items-center justify-center shadow-lg">
+                                                <span class="text-gray-500"
+                                                    style="font-size: large;">@employee.Name[0].ToString().ToUpper()</span>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="flex-1 min-w-0 ms-4">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            @employee.Name
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            @employee.Person.Email;
+                                        </p>
+                                    </div>
+                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+                                        style="color:@(employee.Balance < 0 ? "red" : "green")">
+                                        @employee.Balance.ToString("N2") EGP
+                                    </div>
+                                </div>
+                            </li>
+                        </a>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="borkers" role="tabpanel"
+            aria-labelledby="brokers-tab">
+            <div class="flow-root">
+                <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach (var broker in brokers)
+                    {
+                        <a href="/employee?id=@broker.Id">
+                            <li class="py-3 sm:py-4">
+                                <div class="flex items-center">
+                                    <div class="shrink-0">
+                                        <div
+                                            class="w-16 h-16 mb-3 rounded-full bg-gray-200 flex items-center justify-center shadow-lg">
+                                            <span class="text-gray-500"
+                                                style="font-size: large;">@broker.Name[0].ToString().ToUpper()</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 min-w-0 ms-4">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            @broker.Name
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            @broker.Email;
+                                        </p>
+                                    </div>
+                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+                                        style="color:@(broker.Balance < 0 ? "red" : "green")">
+                                        @broker.Balance.ToString("N2") EGP
+                                    </div>
+
+                                </div>
+                            </li>
+                        </a>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="issue" role="tabpanel"
+            aria-labelledby="issueCompanies-tab">
+            <div class="flow-root">
+                <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach (var issue in issueCompanies)
+                    {
+                        <a href="/employee?id=@issue.Id">
+                            <li class="py-3 sm:py-4">
+                                <div class="flex items-center">
+                                    <div class="shrink-0">
+                                        <div
+                                            class="w-16 h-16 mb-3 rounded-full bg-gray-200 flex items-center justify-center shadow-lg">
+                                            <span class="text-gray-500"
+                                                style="font-size: large;">@issue.Name[0].ToString().ToUpper()</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0 ms-4">
+                                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            @issue.Name
+                                        </p>
+                                    </div>
+                                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+                                        style="color:@(issue.Balance < 0 ? "red" : "green")">
+                                        @issue.Balance.ToString("N2") EGP
+                                    </div>
+
+                                </div>
+                            </li>
+                        </a>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
