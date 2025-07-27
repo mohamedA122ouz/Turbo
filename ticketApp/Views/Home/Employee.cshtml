@@ -10,9 +10,10 @@
         ImageUrl = Model.ImagePath,
         Message = $"Phone Number: {Model.PhoneNum}"
     };
+    ViewData["FocusedButton"] = "payment/choose?type=employee&id="+Model.Id;
 }
 <div class="flex">
-    <partial name="~/Views/Shared/Components/PersonCard.cshtml" model="person" />
+    <partial name="~/Views/Shared/Components/PersonCard.cshtml" model="person" view-data="ViewData"/>
     <partial name="~/Views/Shared/Components/PieChart.cshtml" model="pie" />
 </div>
 

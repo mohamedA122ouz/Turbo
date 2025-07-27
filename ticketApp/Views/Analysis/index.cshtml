@@ -1,16 +1,25 @@
-﻿@{
-    var personCard = ViewData["personCard"] as ticketApp.Models.Utility.PersonCard;
+﻿@using ticketApp.Models.Utility
+@{
     var employees = ViewData["employees"] as List<ticketApp.Models.DBmodels.Employee>;
     var pieChartData = ViewData["pieChartData"] as List<ticketApp.Models.Utility.pieAnalysis>;
+    PersonCard person = new()
+    {
+        Name = employees[0].Name,
+        ButtonText = "Contact",
+        FocusedButton = "View Profile",
+        ImageUrl = employees[0].ImagePath,
+        Message = $"Phone Number: {employees[0].PhoneNum}"
+    };
 }
 
 
 <div class="flex">
     <partial name="~/Views/Shared/Components/GridChart.cshtml" model="Model" />
-    @if(pieChartData != null || pieChartData.Count != 0){
+    @if (pieChartData != null || pieChartData.Count != 0)
+    {
         <partial name="~/Views/Shared/Components/PieChart.cshtml" model="pieChartData" />
     }
-    <partial name="~/Views/Shared/Components/PersonCard.cshtml" model="personCard" />
+    <partial name="~/Views/Shared/Components/PersonCard.cshtml" model="person" />
 </div>
 @if (employees != null)
 {

@@ -1,0 +1,51 @@
+﻿@{
+    string type = ViewData["type"] as string;
+    int id = (int) ViewData["id"];
+
+}
+
+
+<div class="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow space-y-6">
+    <h2 class="text-2xl font-bold text-center text-gray-800">Select Payment Method</h2>
+
+    <form class="space-y-4">
+        <!-- Cash Option -->
+        <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="payment" value="cash"
+                class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" />
+            <div class="ml-4 flex items-center space-x-2">
+                <i class="fas fa-money-bill-wave text-green-600 text-xl"></i>
+                <span class="text-gray-700 font-medium">Cash</span>
+            </div>
+        </label>
+        <!-- Card Option -->
+        <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="payment" value="card"
+                class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" />
+            <div class="ml-4 flex items-center space-x-2">
+                <i class="fas fa-credit-card text-blue-600 text-xl"></i>
+                <span class="text-gray-700 font-medium">Card</span>
+            </div>
+        </label>
+
+        <button type="button" onclick="choose()" class="w-full mt-4 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow">
+            Continue
+        </button>
+    </form>
+</div>
+<script>
+function choose(){
+    const buttons = document.querySelectorAll("[type='radio']");
+    buttons.forEach(el=>{
+        if(el.checked){
+            const a = document.createElement("a");
+            a.href = `/payment/${el.value}?id=@id&type=@type`;
+            a.target = "_self";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    });
+
+}
+</script>

@@ -11,32 +11,33 @@ public class UserServices
     private readonly DBContext db;
     private Ticket? ticket { get; set; }
     private TicketEngine TEngine { get; set; }
-    public UserServices(DBContext db,TicketEngine TEngine)
+    private Balance balance { get; set; }
+    public UserServices(DBContext db, TicketEngine TEngine)
     {
         this.TEngine = TEngine;
         this.db = db;
+        balance = db.Balance.FirstOrDefault(t => t.Date.Month == DateTime.Now.Month);
     }
-    public Ticket? GetTicketByPNR(string pnr)
+    // > on selling for customer
+    //      employee.balance -=  sell;
+    //      customer.balance -= sell;
+    //      issueCompany.balance -= net;
+    //      balance.virtualProfit += sell - net
+    //      save ticket to db
+    public void SellTicket(Employee employee, Client client, IssueCompany issueCompany, EnginOutput enginOutput)
     {
-        return db.Tickets.FirstOrDefault(t => t.PNR == pnr);
+        //buisness logic
+        decimal sell = enginOutput.newTickets.Sum(t => t.SellPrice) + enginOutput.oldTickets.Sum(t => t.SellPrice);
+        decimal net = enginOutput.newTickets.Sum(t => t.NetPrice) + enginOutput.oldTickets.Sum(t => t.NetPrice);
+        employee.Balance -= sell;
+        client.balance -= sell;
+        issueCompany.Balance -= net;
+        balance.VirtualProfit = sell - net;
+        //tickets save
+        db.Tickets.AddRange(enginOutput.newTickets);
+        db.Tickets.AddRange(enginOutput.oldTickets);
+        // Update data base
+        db.SaveChanges();
     }
-    
-    public void PayFor(Employee emp,decimal value) {
-        if (emp == null)
-            return;
-        emp.Balance += value;
-    }
-    public void PayFor(Broker b, decimal value) {
-        if (b == null)
-            return;
-        b.Balance += value;
-    }
-    public void PayFor(IssueCompany company,decimal value) {
-        if (company == null)
-            return;
-        company.Balance += value;
-    }
-
-
 }
 

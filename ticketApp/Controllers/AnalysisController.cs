@@ -24,15 +24,6 @@ namespace ticketApp.Controllers
         // GET: Analysis
         public ActionResult Index()
         {
-            PersonCard personCard = new PersonCard()
-            {
-                Name = "John Doe",
-                Message = "Employee of the month",
-                ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRGG8jKBg7R8mbgNJRLjbKG_DMwOorZxmhFQ&s",
-                FocusedButton = "View Profile",
-                ButtonText = "Contact"
-            };
-            ViewData["personCard"] = personCard;
             List<Employee> employees = db.Employees.Include(e => e.Person).Take(10).OrderByDescending(emp => emp.Tickets.Where(t => t.CreatedAt > DateTime.Now.AddDays(-30)).ToList().Count).ToList();
             List<pieAnalysis> pieChartData = db.Tickets.GroupBy(t => new { t.IssueCompanyId, t.IssueCompany.Name }).Select(
                 g => new pieAnalysis()
