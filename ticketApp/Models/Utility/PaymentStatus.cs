@@ -6,5 +6,6 @@ public enum PaymentStatus
     Completed,
     Failed,
     Refunded,
-    Cancelled
+    Cancelled,
+    AmountError
 }

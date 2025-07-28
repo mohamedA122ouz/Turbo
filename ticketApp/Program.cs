@@ -16,7 +16,7 @@ builder.Services.AddDbContext<DBContext>(options=>
 {
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<AccountantServices>();
 builder.Services.AddScoped<TicketEngine>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

@@ -13,14 +13,14 @@ namespace ticketApp.Controllers
     [Route("tickets")]
     public class TicketController : Controller
     {
-        private UserServices user;
+        private AccountantServices accountant;
         private ILogger<TicketController> logger;
         private DBContext db;
         private TicketEngine TEngine;
         private UserManager<Person> _userManager;
-        public TicketController(UserServices user, TicketEngine TEngine, DBContext db, UserManager<Person> userManager)
+        public TicketController(AccountantServices accountant, TicketEngine TEngine, DBContext db, UserManager<Person> userManager)
         {
-            this.user = user;
+            this.accountant = accountant;
             this.db = db;
             this.TEngine = TEngine;
             _userManager = userManager;
@@ -34,7 +34,7 @@ namespace ticketApp.Controllers
         [HttpGet("list")]
         public IActionResult list()
         {
-            List<Ticket> tickets = db.Tickets.Where(e => true).Take(10).ToList();
+            List<Ticket> tickets = db.Tickets.Where(e => e.Payments.Count == 0).Take(10).ToList();
             return View(tickets);
         }
         [HttpPost("submit")]
@@ -44,39 +44,10 @@ namespace ticketApp.Controllers
             string email = User.Identity.Name!;
             Employee e = db.Employees.FirstOrDefault(emp => emp.Person.Email == email)!;
             int i = 0;
-            tickets.newTickets.ForEach((oldTicket) =>
-            {
-                Client c = db.Clients.FirstOrDefault(c => c.NickName == oldTicket.Client.NickName)!;
-                if (c == null)
-                    c = db.Clients.FirstOrDefault(c => c.NickName == "Unknown")!;
-                if (tickets.oldTickets.Count > 0)
-                    tickets.oldTickets[i].Client = c;
-                tickets.newTickets[i++].Client = c;
-            });
-            if (!tickets.isOldExistinDB)
-            {
-                foreach (Ticket t in tickets.oldTickets)
-                {
-                    TEngine.SaveTicketToDB(t);//do math for employee and so on
-                }
-            }
-            foreach (Ticket t in tickets.newTickets)
-            {
-                TEngine.SaveTicketToDB(t);//do math for employee and so on
-            }
-            if (tickets.oldTickets.Count != 0)
-            {
-                List<ReIssuedTickets> ts = tickets.newTickets.Select((t, i) =>
-                {
-                    return new ReIssuedTickets()
-                    {
-                        OldTnum = tickets.oldTickets[i].TNum,
-                        NewTicket = t
-                    };
-                }).ToList();
-                db.ReIssuedTickets.AddRange(ts);
-            }
-            db.SaveChanges();
+            db.Entry(tickets.newTickets[0]).Reference(t => t.Client).Load();
+            tickets.newTickets.ForEach(el => el.Client = tickets.newTickets[0].Client);
+            IssueCompany issueCompany = tickets.newTickets[0].IssueCompany;
+            accountant.SellTicket(e, tickets.newTickets[0].Client, issueCompany, tickets);
             List<IssueCompany> issueCompanies = db.IssueCompanies.ToList();
             ViewData["issueCompanies"] = issueCompanies;
             return View("~/Views/Ticket/Tickets.cshtml", tickets);
@@ -98,6 +69,10 @@ namespace ticketApp.Controllers
             IssueCompany issueCompany = db.IssueCompanies.FirstOrDefault(i => i.Name == "IATA");
             TEngine.Intializer(input);
             EnginOutput ii = TEngine.createTickets(e, issueCompany, null, client)!;
+            if (db.Tickets.FirstOrDefault(t => t.TNum == ii.newTickets[0].TNum) != null)
+            {
+                ViewData["ToastMessage"] = "This Ticket Already Exist!!";
+            }
             List<IssueCompany> issueCompanies = db.IssueCompanies.ToList();
             ViewData["issueCompanies"] = issueCompanies;
             return View("~/Views/Ticket/Tickets.cshtml", ii);

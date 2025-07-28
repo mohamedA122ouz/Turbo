@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using ticketApp.Models.DBmodels;
+using ticketApp.Models.Utility;
+using ticketApp.Services;
 
 namespace ticketApp.Controllers
 {
@@ -15,9 +17,11 @@ namespace ticketApp.Controllers
         }
         // GET: PaymentController
         private DBContext db;
-        public PaymentController(DBContext db)
+        AccountantServices accountant;
+        public PaymentController(DBContext db, AccountantServices accountant)
         {
             this.db = db;
+            this.accountant = accountant;
         }
         public ActionResult Index()
         {
@@ -47,7 +51,10 @@ namespace ticketApp.Controllers
             switch (type)
             {
                 case "employee":
-                    ViewData["employee"] = db.Employees.Include(e => e.Tickets).FirstOrDefault(e => e.Id == id);
+                    Employee emp = db.Employees.Include(e => e.Tickets).ThenInclude(t=>t.Payments).FirstOrDefault(e => e.Id == id);
+                    if (emp != null)
+                        emp.Tickets = emp.Tickets.Where(t=>t.Payments.Count==0).ToList();
+                    ViewData["employee"] = emp;
                     break;
                 case "broker":
                     ViewData["broker"] = db.Brokers.Include(e => e.Tickets).FirstOrDefault(e => e.Id == id);
@@ -61,10 +68,17 @@ namespace ticketApp.Controllers
             return View("bill");
         }
         [HttpPost]
-        public IActionResult ConfirmPayment(List<int> tickets, decimal confirmedAmount)
+        public IActionResult ConfirmPayment(List<int> ticketIds, decimal confirmedAmount)
         {
-            return Redirect("home");
+            List<Ticket> tickets = db.Tickets.Include(t=>t.Client).Include(t=>t.Employee).Where(t => ticketIds.Contains(t.Id)).ToList();
+            PaymentStatus p = accountant.CashPayment(tickets, confirmedAmount);
+            if (p == PaymentStatus.AmountError)
+            {
+                this.ToastMessage("You confirmed wrong amount!!");
+                return Redirect("Home");
+            }
+            this.ToastMessage("Tickets Paid successfully!!");
+            return Redirect("Home");
         }
-
     }
 }

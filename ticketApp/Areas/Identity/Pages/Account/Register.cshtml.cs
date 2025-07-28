@@ -30,14 +30,17 @@ namespace ticketApp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<Person> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly DBContext db;
 
         public RegisterModel(
             UserManager<Person> userManager,
             IUserStore<Person> userStore,
             SignInManager<Person> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DBContext db)
         {
+            this.db = db;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -90,6 +93,15 @@ namespace ticketApp.Areas.Identity.Pages.Account
             [Display(Name = "Password")]
             public string Password { get; set; }
 
+            [Required]
+            [Display(Name = "User Name")]
+            public string UserName { get; set; }
+
+            [Required]
+            [Phone]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -121,6 +133,14 @@ namespace ticketApp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    db.Clients.Add(new()
+                    {
+                        balance = 0,
+                        Name = Input.UserName,
+                        NickName = Input.UserName,
+                        Person = user,
+                        PhoneNumber = Input.PhoneNumber
+                    });
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

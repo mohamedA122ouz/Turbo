@@ -312,95 +312,94 @@ public class TicketEngine : RegexManger
         }).ToList();
         return output;
     }
-    public CreationStatus SaveTicketToDB(Ticket ticket)
-    {
-        db.Tickets.Add(ticket);
-        ticket.Employee.Tickets.Add(ticket);
-        db.Entry(ticket).Reference(t => t.IssueCompany).Load();
-        if (ticket.Broker != null)
-        {
-            ticket.Broker.Tickets.Add(ticket);
-            ticket.Broker.Balance -= ticket.NetPrice; // Broker's balance should be decreased by the ticket price
-        }
-        else
-            ticket.Employee.Balance -= ticket.NetPrice;
-        // Issued ticket should be subtracted from the employee's balance and the issue company's balance
-        ticket.IssueCompany.Balance -= ticket.NetPrice;
-        if (string.IsNullOrWhiteSpace(ticket.PNR) || string.IsNullOrWhiteSpace(ticket.Airline) || string.IsNullOrWhiteSpace(ticket.TNum) || ticket.NetPrice <= 0)
-        {
-            return CreationStatus.InputError;
-        }
-        if (db.Tickets.Any(t => t.PNR == ticket.PNR))
-        {
-            return CreationStatus.AlreadyExists;
-        }
+    // public CreationStatus SaveTicketToDB(Ticket ticket)
+    // {
+    //     db.Tickets.Add(ticket);
+    //     ticket.Employee.Tickets.Add(ticket);
+    //     db.Entry(ticket).Reference(t => t.IssueCompany).Load();
+    //     if (ticket.Broker != null)
+    //     {
+    //         ticket.Broker.Tickets.Add(ticket);
+    //         ticket.Broker.Balance -= ticket.NetPrice; // Broker's balance should be decreased by the ticket price
+    //     }
+    //     else
+    //         ticket.Employee.Balance -= ticket.NetPrice;
+    //     // Issued ticket should be subtracted from the employee's balance and the issue company's balance
+    //     ticket.IssueCompany.Balance -= ticket.NetPrice;
+    //     if (string.IsNullOrWhiteSpace(ticket.PNR) || string.IsNullOrWhiteSpace(ticket.Airline) || string.IsNullOrWhiteSpace(ticket.TNum) || ticket.NetPrice <= 0)
+    //     {
+    //         return CreationStatus.InputError;
+    //     }
+    //     if (db.Tickets.Any(t => t.PNR == ticket.PNR))
+    //     {
+    //         return CreationStatus.AlreadyExists;
+    //     }
+    //     try
+    //     {
+    //         db.SaveChanges();
+    //         return CreationStatus.Success;
+    //     }
+    //     catch (Exception)
+    //     {
+    //         return CreationStatus.Failure;
+    //     }
+    // }
+    // public CreationStatus NoRevisiounCreation(string ticketDetails, Employee emp, Broker? broker, Client client, IssueCompany issueCompany, Func<Ticket, CreationStatus, bool>? func = null)
+    // {
 
-        try
-        {
-            db.SaveChanges();
-            return CreationStatus.Success;
-        }
-        catch (Exception)
-        {
-            return CreationStatus.Failure;
-        }
-    }
-    public CreationStatus NoRevisiounCreation(string ticketDetails, Employee emp, Broker? broker, Client client, IssueCompany issueCompany, Func<Ticket, CreationStatus, bool>? func = null)
-    {
-
-        if (string.IsNullOrWhiteSpace(ticketDetails))
-        {
-            return CreationStatus.InputError;
-        }
-        EnginOutput? EOutput = createTickets(emp, issueCompany, broker, client);
-        if (EOutput == null)
-            return CreationStatus.Failure;
-        EnginTicketSave(EOutput, func);
-        return CreationStatus.Success;
-    }
-    public (CreationStatus, EnginOutput?) EnginTicketSave(EnginOutput EOutput, Func<Ticket, CreationStatus, bool>? func = null)
-    {
-        if (type == TicketType.Reissue && EOutput.oldTickets.Count != EOutput.newTickets.Count)
-        {
-            return (CreationStatus.NotFound, EOutput);
-        }
-        foreach (Ticket t in EOutput.newTickets)
-        {
-            CreationStatus i = SaveTicketToDB(t);
-            if (i != CreationStatus.Success)
-            {
-                if (func != null)
-                    func(t, i);
-                else
-                {
-                    if (i == CreationStatus.Failure)
-                    {
-                        return (CreationStatus.Failure, EOutput);
-                    }
-                    else if (i == CreationStatus.AlreadyExists)
-                    {
-                        return (CreationStatus.Failure, EOutput);
-                    }
-                }
-            }
-        }
-        //only if reissue
-        if (TicketType.Reissue == type)
-        {
-            int i = 0;
-            foreach (Ticket t in EOutput.newTickets)
-            {
-                Ticket oldTicket = EOutput.oldTickets[i++];
-                oldTicket.isAReIssued = true;
-                db.ReIssuedTickets.Add(new()
-                {
-                    OldTnum = oldTicket.TNum,
-                    NewTicket = t
-                });
-                db.Update(oldTicket);
-            }
-            db.SaveChanges();
-        }
-        return (CreationStatus.Success, EOutput);
-    }
+    //     if (string.IsNullOrWhiteSpace(ticketDetails))
+    //     {
+    //         return CreationStatus.InputError;
+    //     }
+    //     EnginOutput? EOutput = createTickets(emp, issueCompany, broker, client);
+    //     if (EOutput == null)
+    //         return CreationStatus.Failure;
+    //     EnginTicketSave(EOutput, func);
+    //     return CreationStatus.Success;
+    // }
+    // public (CreationStatus, EnginOutput?) EnginTicketSave(EnginOutput EOutput, Func<Ticket, CreationStatus, bool>? func = null)
+    // {
+    //     if (type == TicketType.Reissue && EOutput.oldTickets.Count != EOutput.newTickets.Count)
+    //     {
+    //         return (CreationStatus.NotFound, EOutput);
+    //     }
+    //     foreach (Ticket t in EOutput.newTickets)
+    //     {
+    //         CreationStatus i = SaveTicketToDB(t);
+    //         if (i != CreationStatus.Success)
+    //         {
+    //             if (func != null)
+    //                 func(t, i);
+    //             else
+    //             {
+    //                 if (i == CreationStatus.Failure)
+    //                 {
+    //                     return (CreationStatus.Failure, EOutput);
+    //                 }
+    //                 else if (i == CreationStatus.AlreadyExists)
+    //                 {
+    //                     return (CreationStatus.Failure, EOutput);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     //only if reissue
+    //     if (TicketType.Reissue == type)
+    //     {
+    //         int i = 0;
+    //         foreach (Ticket t in EOutput.newTickets)
+    //         {
+    //             Ticket oldTicket = EOutput.oldTickets[i++];
+    //             oldTicket.isAReIssued = true;
+    //             db.ReIssuedTickets.Add(new()
+    //             {
+    //                 OldTnum = oldTicket.TNum,
+    //                 NewTicket = t
+    //             });
+    //             db.Update(oldTicket);
+    //         }
+    //         db.SaveChanges();
+    //     }
+    //     return (CreationStatus.Success, EOutput);
+    // }
 }

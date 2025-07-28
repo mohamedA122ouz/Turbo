@@ -270,6 +270,18 @@
             </section>
         </div>
     </main>
+    @{
+        var ToastMessage = ViewData["ToastMessage"];
+    }
+
+    @if(ToastMessage != null)
+    {
+        <script type='module'>
+            import Toast from "/js/toast.js";
+            Toast("@ToastMessage");
+        </script>
+        
+    }
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
 

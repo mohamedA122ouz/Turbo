@@ -26,7 +26,7 @@ public class Ticket
     public required decimal SellPrice { get; set; }
     public List<Payment> Payments { get; set; } = new List<Payment>();
     [ForeignKey("ClientId")]
-    public int ClientId { get; set; }
+    public int ClientId { get; set; } = 1;
     [Required]
     public Client Client { get; set; }
     [ForeignKey("IssueCompanyId")]
