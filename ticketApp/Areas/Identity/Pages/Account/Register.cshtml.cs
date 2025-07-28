@@ -141,6 +141,7 @@ namespace ticketApp.Areas.Identity.Pages.Account
                         Person = user,
                         PhoneNumber = Input.PhoneNumber
                     });
+                    db.SaveChanges();
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

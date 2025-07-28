@@ -1,0 +1,44 @@
+﻿@model List<ticketApp.Models.DBmodels.Client>
+
+
+
+<div
+    class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center justify-between mb-4">
+        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Clients</h5>
+    </div>
+    <div class="flow-root">
+        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+            @foreach (var client in Model)
+            {
+                <a href="/client?id=@client.Id">
+                    <li class="py-3 sm:py-4">
+                        <div class="flex items-center">
+                            <div class="shrink-0">
+                                <div
+                                    class="w-16 h-16 mb-3 rounded-full bg-gray-200 flex items-center justify-center shadow-lg">
+                                    <span class="text-gray-500"
+                                        style="font-size: large;">@client.Name[0].ToString().ToUpper()</span>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 min-w-0 ms-4">
+                                <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                    @client.Name
+                                </p>
+                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                    @client.Person.Email;
+                                </p>
+                            </div>
+                            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+                                style="color:@(client.balance < 0 ? "red" : "green")">
+                                @client.balance.ToString("N2") EGP
+                            </div>
+
+                        </div>
+                    </li>
+                </a>
+            }
+        </ul>
+    </div>
+</div>

@@ -64,6 +64,38 @@ public class DBContext : IdentityDbContext<Person>
                 CanEditSettings = true,
                 CanDeleteSettings = true,
                 Employees = new List<Employee>()
+            },
+            new Privileges
+            {
+                Id = 2,
+                Name = "Ticketing",
+                Description = "Ticketing employee.",
+                CanCreateTicket = true,
+                CanViewTicket = true,
+                CanEditTicket = true,
+                CanDeleteTicket = true,
+                CanCreateBroker = true,
+                CanViewBroker = true,
+                CanEditBroker = true,
+                CanDeleteBroker = true,
+                CanShowAnalytics = false,
+                CanViewPayments = false,
+                CanEditPayments = false,
+                CanDeletePayments = false,
+                CanCreatePayment = false,
+                CanViewClients = false,
+                CanEditClients = false,
+                CanDeleteClients = false,
+                CanViewEmployees = false,
+                CanEditEmployees = false,
+                CanDeleteEmployees = false,
+                CanViewPrivileges = false,
+                CanEditPrivileges = false,
+                CanDeletePrivileges = false,
+                CanViewSettings = false,
+                CanEditSettings = false,
+                CanDeleteSettings = false,
+                Employees = new List<Employee>()
             });
         builder.Entity<IssueCompany>().HasData(new {
             Name = "IATA",

@@ -23,6 +23,43 @@ public class HomeController : Controller
     {
         return View();
     }
+    [HttpGet("clients")]
+    public IActionResult clients()
+    {
+        // This is a placeholder for the employees view.
+        ViewData["title"] = "clients";
+        List<Client> em = db.Clients.Include(e => e.Person).Take(10).ToList();
+        return View("listClient",em);
+    }
+    [HttpGet("client")]
+    public IActionResult client(int id)
+    {
+        // This is a placeholder for the employees view.
+        ViewData["title"] = "clients";
+        Client em = db.Clients.FirstOrDefault(c=>c.Id == id);
+        return View("client",em);
+    }
+    [HttpGet("create")]
+    public IActionResult create(int id)
+    {
+        // This is a placeholder for the employees view.
+        ViewData["title"] = "clients";
+        Client client = db.Clients.Include(e=>e.Person).FirstOrDefault(c=>c.Id == id);
+        Privileges p = db.Privileges.FirstOrDefault(p => p.Name == "Ticketing");
+        Employee emp = new()
+        {
+            Balance = client.balance,
+            EmployeeType = EmployeeType.TicketAgent,
+            Name = client.Name,
+            Person = client.Person,
+            PhoneNum = client.PhoneNumber,
+            Privileges = p
+        };
+        db.Remove(client);
+        db.Employees.Add(emp);
+        db.SaveChanges();
+        return View("index");
+    }
     [HttpGet("employees")]
     public IActionResult Employees()
     {
